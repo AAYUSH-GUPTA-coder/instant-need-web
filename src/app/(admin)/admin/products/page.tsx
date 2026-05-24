@@ -40,6 +40,7 @@ import {
 
 import { useAdminProducts, useDeleteProduct } from "@/lib/hooks/useAdmin";
 import { useCategories } from "@/lib/hooks/useCatalog";
+import { calcTotalPages } from "@/lib/types/common";
 import { formatCurrency } from "@/lib/utils";
 import { toast } from "sonner";
 import { getApiError } from "@/lib/errors";
@@ -53,6 +54,7 @@ function ProductsContent() {
   const [search, setSearch] = useState(searchParams.get("search") ?? "");
   const [categoryId, setCategoryId] = useState(searchParams.get("categoryId") ?? "");
   const [activeFilter, setActiveFilter] = useState(searchParams.get("active") ?? "");
+  const page = parseInt(searchParams.get("page") ?? "1", 10); // 1-indexed
 
   const { data: categoriesData } = useCategories();
   const categories = categoriesData ?? [];
@@ -61,11 +63,13 @@ function ProductsContent() {
     search: search || undefined,
     categoryId: categoryId || undefined,
     ...(activeFilter !== "" ? { inStock: activeFilter === "active" } : {}),
+    page,
   };
 
   const { data, isLoading } = useAdminProducts(params);
   const deleteProduct = useDeleteProduct();
-  const products = data?.content ?? [];
+  const products = data?.items ?? [];
+  const totalPgs = data ? calcTotalPages(data) : 0;
 
   async function handleDelete(id: string, name: string) {
     try {
@@ -243,33 +247,25 @@ function ProductsContent() {
         </div>
 
         {/* Pagination */}
-        {data && data.totalPages > 1 && (
+        {data && totalPgs > 1 && (
           <div className="flex items-center justify-between text-sm text-muted-foreground">
             <p>
-              Showing {products.length} of {data.totalElements} products
+              Showing {products.length} of {data.total} products
             </p>
             <div className="flex gap-2">
               <Button
                 variant="outline"
                 size="sm"
-                disabled={data.first}
-                onClick={() =>
-                  router.push(
-                    `/admin/products?page=${(data.number ?? 0) - 1}`
-                  )
-                }
+                disabled={data.page <= 1}
+                onClick={() => router.push(`/admin/products?page=${data.page - 1}`)}
               >
                 Previous
               </Button>
               <Button
                 variant="outline"
                 size="sm"
-                disabled={data.last}
-                onClick={() =>
-                  router.push(
-                    `/admin/products?page=${(data.number ?? 0) + 1}`
-                  )
-                }
+                disabled={data.page >= totalPgs}
+                onClick={() => router.push(`/admin/products?page=${data.page + 1}`)}
               >
                 Next
               </Button>

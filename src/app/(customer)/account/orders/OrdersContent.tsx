@@ -9,6 +9,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Pagination } from "@/components/catalog/Pagination";
 import { useMyOrders } from "@/lib/hooks/useOrders";
+import { calcTotalPages } from "@/lib/types/common";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -19,7 +20,8 @@ export function OrdersContent() {
   const searchParams = useSearchParams();
   const page = parseInt(searchParams.get("page") ?? "0", 10);
 
-  const { data, isLoading } = useMyOrders({ page, size: PAGE_SIZE });
+  const { data, isLoading } = useMyOrders({ page: page + 1, size: PAGE_SIZE });
+  const totalPgs = data ? calcTotalPages(data) : 0;
 
   if (isLoading) {
     return (
@@ -31,7 +33,7 @@ export function OrdersContent() {
     );
   }
 
-  if (!data || data.content.length === 0) {
+  if (!data || (data.items?.length ?? 0) === 0) {
     return (
       <EmptyState
         icon={ShoppingBag}
@@ -49,11 +51,11 @@ export function OrdersContent() {
   return (
     <div className="space-y-5">
       <p className="text-sm text-muted-foreground">
-        {data.totalElements} order{data.totalElements !== 1 ? "s" : ""}
+        {data.total} order{data.total !== 1 ? "s" : ""}
       </p>
 
       <div className="space-y-3">
-        {data.content.map((order) => (
+        {(data.items ?? []).map((order) => (
           <Link
             key={order.id}
             href={`/account/orders/${order.id}`}
@@ -88,8 +90,8 @@ export function OrdersContent() {
         ))}
       </div>
 
-      {data.totalPages > 1 && (
-        <Pagination currentPage={data.number} totalPages={data.totalPages} />
+      {totalPgs > 1 && (
+        <Pagination currentPage={data.page - 1} totalPages={totalPgs} />
       )}
     </div>
   );

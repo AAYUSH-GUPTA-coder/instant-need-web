@@ -27,6 +27,7 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { useAdminOrders } from "@/lib/hooks/useAdmin";
+import { calcTotalPages } from "@/lib/types/common";
 import { formatCurrency } from "@/lib/utils";
 import type { OrderStatus } from "@/lib/types/order";
 
@@ -52,7 +53,7 @@ function OrdersContent() {
   const [status, setStatus] = useState<string>(
     searchParams.get("status") ?? "ALL"
   );
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1); // 1-indexed to match backend
 
   const params = {
     status: status === "ALL" ? undefined : (status as OrderStatus),
@@ -61,7 +62,8 @@ function OrdersContent() {
   };
 
   const { data, isLoading } = useAdminOrders(params);
-  const orders = data?.content ?? [];
+  const orders = data?.items ?? [];
+  const totalPgs = data ? calcTotalPages(data) : 0;
 
   return (
     <>
@@ -72,7 +74,7 @@ function OrdersContent() {
           value={status}
           onValueChange={(v) => {
             setStatus(v);
-            setPage(0);
+            setPage(1);
           }}
         >
           <TabsList className="flex-wrap h-auto gap-1 bg-muted/50">
@@ -167,25 +169,24 @@ function OrdersContent() {
         </div>
 
         {/* Pagination */}
-        {data && data.totalPages > 1 && (
+        {data && totalPgs > 1 && (
           <div className="flex items-center justify-between text-sm text-muted-foreground">
             <p>
-              Page {(data.number ?? 0) + 1} of {data.totalPages} —{" "}
-              {data.totalElements} orders
+              Page {data.page} of {totalPgs} — {data.total} orders
             </p>
             <div className="flex gap-2">
               <Button
                 variant="outline"
                 size="sm"
-                disabled={data.first}
-                onClick={() => setPage((p) => Math.max(0, p - 1))}
+                disabled={data.page <= 1}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
               >
                 Previous
               </Button>
               <Button
                 variant="outline"
                 size="sm"
-                disabled={data.last}
+                disabled={data.page >= totalPgs}
                 onClick={() => setPage((p) => p + 1)}
               >
                 Next

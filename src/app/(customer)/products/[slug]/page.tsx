@@ -27,7 +27,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
   const { data: related } = useProducts(
     product ? { categoryId: product.categoryId, size: 4 } : undefined
   );
-  const relatedProducts = related?.content.filter((p) => p.id !== product?.id).slice(0, 4) ?? [];
+  const relatedProducts = (related?.items ?? []).filter((p) => p.id !== product?.id).slice(0, 4);
 
   if (isLoading) {
     return (

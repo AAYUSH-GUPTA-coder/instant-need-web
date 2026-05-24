@@ -9,6 +9,7 @@ import { ProductCard, ProductCardSkeleton } from "@/components/catalog/ProductCa
 import { Pagination } from "@/components/catalog/Pagination";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useProducts } from "@/lib/hooks/useCatalog";
+import { calcTotalPages } from "@/lib/types/common";
 import { useRouter, usePathname } from "next/navigation";
 import { useCallback } from "react";
 
@@ -26,7 +27,7 @@ export function ProductsContent() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const page = parseInt(searchParams.get("page") ?? "0", 10);
+  const page = parseInt(searchParams.get("page") ?? "0", 10); // 0-indexed in URL
   const search = searchParams.get("search") ?? undefined;
   const categoryId = searchParams.get("categoryId") ?? undefined;
   const minPrice = searchParams.get("minPrice") ? Number(searchParams.get("minPrice")) : undefined;
@@ -40,10 +41,13 @@ export function ProductsContent() {
     minPrice,
     maxPrice,
     inStock,
-    page,
+    page: page + 1, // backend is 1-indexed; URL param is 0-indexed
     size: PAGE_SIZE,
     sort,
   });
+
+  const totalPgs = data ? calcTotalPages(data) : 0;
+  const items = data?.items ?? [];
 
   const updateParam = useCallback(
     (key: string, value: string | null) => {
@@ -104,7 +108,7 @@ export function ProductsContent() {
         {/* Results count */}
         {data && (
           <p className="text-sm text-muted-foreground">
-            {data.totalElements} product{data.totalElements !== 1 ? "s" : ""}
+            {data.total} product{data.total !== 1 ? "s" : ""}
           </p>
         )}
 
@@ -115,7 +119,7 @@ export function ProductsContent() {
               <ProductCardSkeleton key={i} />
             ))}
           </div>
-        ) : data?.content.length === 0 ? (
+        ) : items.length === 0 ? (
           <EmptyState
             icon={Package}
             title="No products found"
@@ -123,16 +127,16 @@ export function ProductsContent() {
           />
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {data?.content.map((product) => (
+            {items.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
         )}
 
         {/* Pagination */}
-        {data && data.totalPages > 1 && (
+        {data && totalPgs > 1 && (
           <div className="pt-4">
-            <Pagination currentPage={data.number} totalPages={data.totalPages} />
+            <Pagination currentPage={data.page - 1} totalPages={totalPgs} />
           </div>
         )}
       </div>

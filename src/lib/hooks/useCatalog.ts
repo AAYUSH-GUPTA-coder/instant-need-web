@@ -13,10 +13,10 @@ export const catalogKeys = {
   product: (slug: string) => [...catalogKeys.all, "product", slug] as const,
 };
 
-export function useCategories() {
+export function useCategories(tree = false) {
   return useQuery({
     queryKey: catalogKeys.categories(),
-    queryFn: catalogApi.getCategories,
+    queryFn: () => catalogApi.getCategories(tree),
     staleTime: 5 * 60_000, // categories rarely change
   });
 }

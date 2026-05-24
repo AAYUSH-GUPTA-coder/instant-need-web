@@ -74,11 +74,11 @@ function FeaturedProducts() {
     );
   }
 
-  if (!data || data.content.length === 0) return null;
+  if (!data || (data.items?.length ?? 0) === 0) return null;
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {data.content.map((p) => <ProductCard key={p.id} product={p} />)}
+      {(data.items ?? []).map((p) => <ProductCard key={p.id} product={p} />)}
     </div>
   );
 }

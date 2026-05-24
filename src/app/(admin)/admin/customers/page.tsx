@@ -20,11 +20,12 @@ import {
 } from "@/components/ui/table";
 
 import { useAdminCustomers } from "@/lib/hooks/useAdmin";
+import { calcTotalPages } from "@/lib/types/common";
 import { formatCurrency } from "@/lib/utils";
 
 function CustomersContent() {
   const [search, setSearch] = useState("");
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1); // 1-indexed to match backend
 
   const { data, isLoading } = useAdminCustomers({
     search: search || undefined,
@@ -32,8 +33,8 @@ function CustomersContent() {
     size: 20,
   });
 
-  const customers = (data?.content ?? data) as any[];
-  const paged = data && "totalPages" in data ? data : null;
+  const customers = data?.items ?? [];
+  const totalPgs = data ? calcTotalPages(data) : 0;
 
   return (
     <>
@@ -48,7 +49,7 @@ function CustomersContent() {
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
-              setPage(0);
+              setPage(1);
             }}
           />
         </div>
@@ -129,25 +130,24 @@ function CustomersContent() {
         </div>
 
         {/* Pagination */}
-        {paged && paged.totalPages > 1 && (
+        {data && totalPgs > 1 && (
           <div className="flex items-center justify-between text-sm text-muted-foreground">
             <p>
-              Page {(paged.number ?? 0) + 1} of {paged.totalPages} —{" "}
-              {paged.totalElements} customers
+              Page {data.page} of {totalPgs} — {data.total} customers
             </p>
             <div className="flex gap-2">
               <Button
                 variant="outline"
                 size="sm"
-                disabled={paged.first}
-                onClick={() => setPage((p) => Math.max(0, p - 1))}
+                disabled={data.page <= 1}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
               >
                 Previous
               </Button>
               <Button
                 variant="outline"
                 size="sm"
-                disabled={paged.last}
+                disabled={data.page >= totalPgs}
                 onClick={() => setPage((p) => p + 1)}
               >
                 Next
