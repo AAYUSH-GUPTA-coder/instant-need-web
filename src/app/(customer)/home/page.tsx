@@ -1,25 +1,87 @@
+"use client";
+
 import Link from "next/link";
+import Image from "next/image";
+import { ArrowRight, Package, Truck, ShieldCheck, LayoutGrid } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
-import { ArrowRight, Package, Truck, ShieldCheck } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ProductCard, ProductCardSkeleton } from "@/components/catalog/ProductCard";
+import { useCategories, useProducts } from "@/lib/hooks/useCatalog";
 import { cn } from "@/lib/utils";
 
 const FEATURES = [
-  {
-    icon: Package,
-    title: "Bulk Ordering",
-    description: "Order in bulk with tiered pricing that rewards volume.",
-  },
-  {
-    icon: Truck,
-    title: "Fast Delivery",
-    description: "Reliable B2B logistics with real-time order tracking.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Verified Suppliers",
-    description: "Every product is sourced from vetted wholesale suppliers.",
-  },
+  { icon: Package, title: "Bulk Ordering", description: "Tiered pricing that rewards volume." },
+  { icon: Truck, title: "Fast Delivery", description: "Reliable B2B logistics with real-time tracking." },
+  { icon: ShieldCheck, title: "Verified Suppliers", description: "Every product from vetted wholesale suppliers." },
 ];
+
+function FeaturedCategories() {
+  const { data: categories, isLoading } = useCategories();
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton key={i} className="h-28 rounded-xl" />
+        ))}
+      </div>
+    );
+  }
+
+  if (!categories || categories.length === 0) return null;
+
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      {categories.slice(0, 8).map((cat) => (
+        <Link key={cat.id} href={`/categories/${cat.slug}`} className="group block">
+          <Card className="overflow-hidden h-full transition-shadow hover:shadow-md">
+            <div className="relative h-24 bg-muted overflow-hidden">
+              {cat.imageUrl ? (
+                <Image
+                  src={cat.imageUrl}
+                  alt={cat.name}
+                  fill
+                  sizes="(max-width: 640px) 50vw, 25vw"
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center">
+                  <LayoutGrid className="h-8 w-8 text-muted-foreground/20" strokeWidth={1} />
+                </div>
+              )}
+            </div>
+            <CardContent className="p-3">
+              <p className="font-medium text-sm group-hover:text-primary transition-colors truncate">
+                {cat.name}
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
+      ))}
+    </div>
+  );
+}
+
+function FeaturedProducts() {
+  const { data, isLoading } = useProducts({ size: 8, sort: "createdAt,desc" });
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)}
+      </div>
+    );
+  }
+
+  if (!data || data.content.length === 0) return null;
+
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {data.content.map((p) => <ProductCard key={p.id} product={p} />)}
+    </div>
+  );
+}
 
 export default function HomePage() {
   return (
@@ -45,24 +107,45 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Categories */}
+      <section className="py-16 px-4 bg-muted/20">
+        <div className="max-w-7xl mx-auto space-y-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-bold">Shop by Category</h2>
+            <Link href="/categories" className="text-sm text-primary hover:underline flex items-center gap-1">
+              All categories <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+          <FeaturedCategories />
+        </div>
+      </section>
+
+      {/* Featured products */}
+      <section className="py-16 px-4">
+        <div className="max-w-7xl mx-auto space-y-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-bold">Latest Products</h2>
+            <Link href="/products" className="text-sm text-primary hover:underline flex items-center gap-1">
+              View all <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+          <FeaturedProducts />
+        </div>
+      </section>
+
       {/* Features */}
-      <section className="py-20 px-4 bg-muted/20">
+      <section className="py-16 px-4 bg-muted/20">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
-            Built for B2B businesses
-          </h2>
-          <div className="grid md:grid-cols-3 gap-8">
+          <h2 className="text-xl font-bold text-center mb-10">Built for B2B businesses</h2>
+          <div className="grid md:grid-cols-3 gap-6">
             {FEATURES.map((f) => {
               const Icon = f.icon;
               return (
-                <div
-                  key={f.title}
-                  className="flex flex-col items-center text-center gap-4 p-6 rounded-xl bg-background border"
-                >
+                <div key={f.title} className="flex flex-col items-center text-center gap-3 p-6 rounded-xl bg-background border">
                   <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
                     <Icon className="h-6 w-6 text-primary" />
                   </div>
-                  <h3 className="font-semibold text-lg">{f.title}</h3>
+                  <h3 className="font-semibold">{f.title}</h3>
                   <p className="text-sm text-muted-foreground">{f.description}</p>
                 </div>
               );
@@ -72,14 +155,10 @@ export default function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 px-4">
-        <div className="max-w-2xl mx-auto text-center space-y-6">
-          <h2 className="text-2xl md:text-3xl font-bold">
-            Ready to start ordering?
-          </h2>
-          <p className="text-muted-foreground">
-            Join thousands of businesses already using InstantNeed.
-          </p>
+      <section className="py-16 px-4">
+        <div className="max-w-2xl mx-auto text-center space-y-5">
+          <h2 className="text-2xl font-bold">Ready to start ordering?</h2>
+          <p className="text-muted-foreground">Join thousands of businesses already using InstantNeed.</p>
           <Link href="/register" className={cn(buttonVariants({ size: "lg" }))}>
             Get started for free
           </Link>

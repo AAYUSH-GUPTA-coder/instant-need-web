@@ -1,0 +1,54 @@
+import { formatCurrency } from "@/lib/utils";
+import type { PricingTierDTO } from "@/lib/types/catalog";
+
+interface PricingTiersTableProps {
+  tiers: PricingTierDTO[];
+  currencyCode: string;
+  basePrice: number;
+}
+
+export function PricingTiersTable({ tiers, currencyCode, basePrice }: PricingTiersTableProps) {
+  if (!tiers || tiers.length === 0) {
+    return (
+      <div className="rounded-lg border p-4 text-sm text-muted-foreground">
+        <p className="font-medium text-foreground mb-1">Base price</p>
+        <p className="text-xl font-bold text-foreground">
+          {formatCurrency(basePrice, currencyCode)}
+          <span className="text-sm font-normal text-muted-foreground ml-1">/ unit</span>
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-lg border overflow-hidden">
+      <div className="bg-muted/40 px-4 py-2 border-b">
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          Volume pricing
+        </p>
+      </div>
+      <div className="divide-y">
+        {tiers.map((tier, i) => (
+          <div
+            key={tier.id ?? i}
+            className="flex items-center justify-between px-4 py-2.5"
+          >
+            <span className="text-sm text-muted-foreground">
+              {tier.minQty}
+              {tier.maxQty ? `–${tier.maxQty}` : "+"} units
+            </span>
+            <span className="text-sm font-semibold">
+              {formatCurrency(tier.unitPrice, tier.currencyCode)}
+              <span className="text-xs font-normal text-muted-foreground ml-1">/ unit</span>
+            </span>
+          </div>
+        ))}
+      </div>
+      <div className="bg-muted/20 px-4 py-2 border-t">
+        <p className="text-xs text-muted-foreground">
+          Prices shown exclude taxes. Final price confirmed at checkout.
+        </p>
+      </div>
+    </div>
+  );
+}
