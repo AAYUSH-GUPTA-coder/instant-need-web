@@ -18,9 +18,10 @@ import { toast } from "sonner";
 
 interface AdminHeaderProps {
   title: string;
+  actions?: React.ReactNode;
 }
 
-export function AdminHeader({ title }: AdminHeaderProps) {
+export function AdminHeader({ title, actions }: AdminHeaderProps) {
   const router = useRouter();
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
@@ -41,6 +42,7 @@ export function AdminHeader({ title }: AdminHeaderProps) {
   return (
     <header className="flex h-16 items-center border-b px-6 gap-4 bg-background shrink-0">
       <h1 className="text-xl font-semibold flex-1">{title}</h1>
+      {actions && <div className="flex items-center gap-2">{actions}</div>}
 
       <Button variant="ghost" size="icon">
         <Bell className="h-5 w-5" />

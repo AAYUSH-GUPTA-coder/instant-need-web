@@ -66,6 +66,13 @@ export interface ProductFilterParams {
   sort?: string;
 }
 
+export interface PricingTierRequest {
+  minQty: number;
+  maxQty?: number;
+  unitPrice: number;
+  currencyCode: string;
+}
+
 export interface CreateProductRequest {
   name: string;
   sku: string;
@@ -76,6 +83,7 @@ export interface CreateProductRequest {
   stock: number;
   moq: number;
   active: boolean;
+  pricingTiers?: PricingTierRequest[];
 }
 
 export interface UpdateProductRequest extends Partial<CreateProductRequest> {}
