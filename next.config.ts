@@ -29,6 +29,9 @@ const nextConfig: NextConfig = {
 
   // ── Image optimisation ────────────────────────────────────────────────
   images: {
+    dangerouslyAllowSVG: true,
+    contentDispositionType: "attachment",
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     remotePatterns: [
       // CDN / object-storage for product images (configurable via env)
       {
@@ -44,17 +47,22 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "**.s3.**.amazonaws.com",
       },
-      // Cloudinary
-      {
-        protocol: "https",
-        hostname: "res.cloudinary.com",
-      },
-      // Development / local mocks
-      {
-        protocol: "http",
-        hostname: "localhost",
-        port: "8080",
-      },
+    // Cloudinary
+    {
+      protocol: "https",
+      hostname: "res.cloudinary.com",
+    },
+    // Placeholder images (development/testing)
+    {
+      protocol: "https",
+      hostname: "placehold.co",
+    },
+    // Development / local mocks
+    {
+      protocol: "http",
+      hostname: "localhost",
+      port: "8080",
+    },
     ],
     // Use AVIF first for better compression, fallback to WebP
     formats: ["image/avif", "image/webp"],
