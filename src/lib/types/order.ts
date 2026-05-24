@@ -56,8 +56,27 @@ export interface OrderListItem {
   placedAt: string;
 }
 
+export interface OrderItemRequest {
+  productId: string;
+  quantity: number;
+}
+
+export interface InlineShippingAddress {
+  fullName: string;
+  addressLine1: string;
+  addressLine2?: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  phoneNumber?: string;
+  saveAddress?: boolean;
+}
+
 export interface PlaceOrderRequest {
-  shippingAddressId: string;
+  items: OrderItemRequest[];
+  shippingAddressId?: string;      // use saved address
+  shippingAddress?: InlineShippingAddress; // or provide inline
   paymentMethod: string;
   notes?: string;
 }
