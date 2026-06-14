@@ -19,7 +19,7 @@ function requireEnv(key: string, fallback?: string): string {
 /** Public vars (safe to expose in browser bundles) */
 export const env = {
   /** Base URL for the backend API, e.g. http://localhost:8080/api/v1 */
-  apiUrl: requireEnv("NEXT_PUBLIC_API_URL", "http://localhost:8080/api/v1"),
+  apiUrl: requireEnv("NEXT_PUBLIC_API_URL"),
 
   /** App display name used in titles and emails */
   appName: process.env.NEXT_PUBLIC_APP_NAME ?? "InstantNeed",
