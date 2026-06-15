@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Package,
+  Tag,
+  CircleDollarSign,
   ShoppingBag,
   Users,
   BarChart3,
@@ -20,6 +22,8 @@ import { useUIStore } from "@/lib/stores/uiStore";
 const NAV_ITEMS = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard, exact: true },
   { label: "Products", href: "/admin/products", icon: Package },
+  { label: "Categories", href: "/admin/categories", icon: Tag },
+  { label: "Pricing", href: "/admin/pricing", icon: CircleDollarSign },
   { label: "Orders", href: "/admin/orders", icon: ShoppingBag },
   { label: "Customers", href: "/admin/customers", icon: Users },
   { label: "Reports", href: "/admin/reports", icon: BarChart3 },
