@@ -15,6 +15,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import { InstantNeedIcon, InstantNeedWordmark } from "@/components/ui/brand";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useUIStore } from "@/lib/stores/uiStore";
@@ -48,10 +49,8 @@ export function AdminSidebar() {
     >
       {/* Logo */}
       <div className="flex h-16 items-center border-b px-4 gap-2 overflow-hidden">
-        <Package2 className="h-6 w-6 text-primary shrink-0" />
-        {sidebarOpen && (
-          <span className="font-bold text-base whitespace-nowrap">InstantNeed</span>
-        )}
+        <InstantNeedIcon size={24} className="shrink-0" />
+        {sidebarOpen && <InstantNeedWordmark className="text-base whitespace-nowrap" />}
       </div>
 
       {/* Nav */}

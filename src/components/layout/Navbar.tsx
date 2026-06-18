@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ShoppingCart, User, Menu, Package2, Search, LogOut } from "lucide-react";
+import { InstantNeedIcon, InstantNeedWordmark } from "@/components/ui/brand";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -49,9 +50,9 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="max-w-7xl mx-auto flex h-16 items-center px-4 gap-6">
         {/* Logo */}
-        <Link href="/home" className="flex items-center gap-2 font-bold text-lg shrink-0">
-          <Package2 className="h-6 w-6 text-primary" />
-          <span>InstantNeed</span>
+        <Link href="/home" className="flex items-center gap-2 shrink-0">
+          <InstantNeedIcon size={28} />
+          <InstantNeedWordmark className="text-lg" />
         </Link>
 
         {/* Desktop nav */}
@@ -144,11 +145,11 @@ export function Navbar() {
           <SheetContent side="left" className="w-72">
             <Link
               href="/home"
-              className="flex items-center gap-2 font-bold text-lg mb-8"
+              className="flex items-center gap-2 mb-8"
               onClick={() => setMobileMenuOpen(false)}
             >
-              <Package2 className="h-6 w-6 text-primary" />
-              InstantNeed
+              <InstantNeedIcon size={28} />
+              <InstantNeedWordmark className="text-lg" />
             </Link>
             <nav className="flex flex-col">
               {NAV_LINKS.map((link) => (
