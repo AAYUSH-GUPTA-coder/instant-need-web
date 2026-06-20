@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { Tag, Pencil, Trash2, Loader2, Plus, Search, ImageOff } from "lucide-react";
+import { useState, useRef } from "react";
+import { Tag, Pencil, Trash2, Loader2, Plus, Search, ImageOff, Upload, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import Image from "next/image";
 
 import { AdminHeader } from "@/components/layout/AdminHeader";
 import { Button } from "@/components/ui/button";
@@ -46,6 +47,7 @@ import {
   useUpdateCategory,
   useDeleteCategory,
 } from "@/lib/hooks/useAdmin";
+import { adminCatalogApi } from "@/lib/api/catalog";
 import { categorySchema, type CategoryFormData } from "@/lib/validations/admin";
 import type { CategoryDTO } from "@/lib/types/catalog";
 import { getApiError } from "@/lib/errors";
@@ -63,6 +65,10 @@ function CategoryDialog({ open, onClose, editing }: CategoryDialogProps) {
   const createCategory = useCreateCategory();
   const updateCategory = useUpdateCategory();
 
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(editing?.imageUrl ?? null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const {
     register,
     handleSubmit,
@@ -71,33 +77,61 @@ function CategoryDialog({ open, onClose, editing }: CategoryDialogProps) {
   } = useForm<CategoryFormData>({
     resolver: zodResolver(categorySchema),
     values: editing
-      ? {
-          name: editing.name,
-          description: editing.description ?? "",
-          imageUrl: editing.imageUrl ?? "",
-        }
-      : { name: "", description: "", imageUrl: "" },
+      ? { name: editing.name, description: editing.description ?? "" }
+      : { name: "", description: "" },
   });
 
   function handleClose() {
     reset();
+    setPendingFile(null);
+    setPreviewUrl(null);
     onClose();
   }
 
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setPendingFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+  }
+
+  function clearImage() {
+    setPendingFile(null);
+    setPreviewUrl(editing?.imageUrl ?? null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }
+
   async function onSubmit(data: CategoryFormData) {
-    const body = {
-      name: data.name,
-      description: data.description || undefined,
-      imageUrl: data.imageUrl || undefined,
-    };
     try {
+      let categoryId: string;
+
       if (isEdit && editing) {
-        await updateCategory.mutateAsync({ id: editing.id, body });
-        toast.success(`"${data.name}" updated`);
+        const updated = await updateCategory.mutateAsync({
+          id: editing.id,
+          body: {
+            name: data.name,
+            description: data.description || undefined,
+          },
+        });
+        categoryId = updated.id;
+        if (!pendingFile) {
+          toast.success(`"${data.name}" updated`);
+          handleClose();
+          return;
+        }
       } else {
-        await createCategory.mutateAsync(body);
-        toast.success(`"${data.name}" created`);
+        const created = await createCategory.mutateAsync({
+          name: data.name,
+          description: data.description || undefined,
+        });
+        categoryId = created.id;
       }
+
+      if (pendingFile) {
+        await adminCatalogApi.uploadCategoryImage(categoryId, pendingFile);
+      }
+
+      toast.success(isEdit ? `"${data.name}" updated` : `"${data.name}" created`);
       handleClose();
     } catch (err) {
       toast.error(getApiError(err, isEdit ? "Failed to update category" : "Failed to create category"));
@@ -133,16 +167,52 @@ function CategoryDialog({ open, onClose, editing }: CategoryDialogProps) {
             />
           </div>
 
-          <div className="space-y-1">
-            <Label htmlFor="cat-img">Image URL</Label>
-            <Input
-              id="cat-img"
-              placeholder="https://…"
-              {...register("imageUrl")}
-            />
-            {errors.imageUrl && (
-              <p className="text-xs text-destructive">{errors.imageUrl.message}</p>
+          {/* Image upload */}
+          <div className="space-y-2">
+            <Label>Category Image</Label>
+            {previewUrl ? (
+              <div className="relative w-full aspect-video rounded-lg overflow-hidden border bg-muted">
+                <Image
+                  src={previewUrl}
+                  alt="Category image preview"
+                  fill
+                  className="object-cover"
+                  unoptimized={previewUrl.startsWith("blob:")}
+                />
+                <button
+                  type="button"
+                  onClick={clearImage}
+                  className="absolute top-2 right-2 p-1 rounded-full bg-background/80 hover:bg-background border shadow-sm"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="absolute bottom-2 right-2 flex items-center gap-1.5 text-xs px-2 py-1 rounded-md bg-background/80 hover:bg-background border shadow-sm"
+                >
+                  <Upload className="h-3 w-3" />
+                  Change
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="w-full flex flex-col items-center justify-center gap-2 h-28 rounded-lg border-2 border-dashed border-muted-foreground/25 hover:border-muted-foreground/50 hover:bg-muted/50 transition-colors text-muted-foreground"
+              >
+                <Upload className="h-6 w-6" />
+                <span className="text-sm">Click to upload image</span>
+                <span className="text-xs">JPEG, PNG, WebP — max 5 MB</span>
+              </button>
             )}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              className="hidden"
+              onChange={handleFileChange}
+            />
           </div>
 
           <DialogFooter className="pt-2">
@@ -262,10 +332,11 @@ export default function CategoriesPage() {
                   <TableRow key={cat.id}>
                     <TableCell>
                       {cat.imageUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
+                        <Image
                           src={cat.imageUrl}
                           alt={cat.name}
+                          width={36}
+                          height={36}
                           className="h-9 w-9 rounded object-cover"
                         />
                       ) : (

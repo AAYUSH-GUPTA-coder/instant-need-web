@@ -94,4 +94,14 @@ export const adminCatalogApi = {
 
   deleteCategory: (id: string) =>
     apiClient.delete<void>(`/admin/categories/${id}`).then((r) => r.data),
+
+  uploadCategoryImage: (id: string, file: File) => {
+    const form = new FormData();
+    form.append("file", file);
+    return apiClient
+      .post<{ id: string; imageUrl: string }>(`/admin/categories/${id}/image`, form, {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
+      .then((r) => r.data);
+  },
 };
