@@ -41,6 +41,7 @@ export default function CustomerDetailPage({ params }: CustomerDetailPageProps) 
   const { data, isLoading } = useAdminCustomer(id);
 
   // The admin customer API response may have nested profile + orders
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const customer = data as any;
 
   if (isLoading) {
@@ -67,7 +68,8 @@ export default function CustomerDetailPage({ params }: CustomerDetailPageProps) 
     );
   }
 
-  const orders: any[] = customer.orders ?? customer.recentOrders ?? [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const orders: any[] = customer.recentOrders ?? customer.orders ?? [];
 
   return (
     <>
