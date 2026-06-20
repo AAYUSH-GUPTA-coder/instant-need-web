@@ -63,7 +63,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
     );
   }
 
-  const images = product.images ?? [];
+  const images = (product.images ?? []).filter((img) => !img.url?.includes("placehold.co"));
   const primaryImage = images[activeImage]?.url ?? null;
 
   return (
