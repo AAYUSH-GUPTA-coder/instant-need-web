@@ -12,8 +12,8 @@ import { formatCurrency, cn } from "@/lib/utils";
 
 export default function CartPage() {
   const items = useCartStore((s) => s.items);
-  const subtotal = useCartStore((s) => s.subtotal)();
-  const currencyCode = useCartStore((s) => s.currencyCode)();
+  const subtotal = useCartStore((s) => s.subtotal());
+  const currencyCode = useCartStore((s) => s.currencyCode());
   const clear = useCartStore((s) => s.clear);
 
   if (items.length === 0) {

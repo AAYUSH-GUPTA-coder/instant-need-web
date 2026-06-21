@@ -6,8 +6,8 @@ import { formatCurrency } from "@/lib/utils";
 
 export function OrderSummaryPanel() {
   const items = useCartStore((s) => s.items);
-  const subtotal = useCartStore((s) => s.subtotal)();
-  const currencyCode = useCartStore((s) => s.currencyCode)();
+  const subtotal = useCartStore((s) => s.subtotal());
+  const currencyCode = useCartStore((s) => s.currencyCode());
 
   return (
     <div className="rounded-xl border bg-card p-5 space-y-4 sticky top-24">

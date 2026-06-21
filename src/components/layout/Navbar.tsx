@@ -32,7 +32,7 @@ export function Navbar() {
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)();
-  const totalItems = useCartStore((s) => s.totalItems)();
+  const totalItems = useCartStore((s) => s.totalItems());
   const { mobileMenuOpen, setMobileMenuOpen } = useUIStore();
 
   async function handleLogout() {
