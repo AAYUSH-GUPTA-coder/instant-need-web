@@ -48,7 +48,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 {formatCurrency(product.basePrice, product.currencyCode)}
               </p>
               <p className="text-[10px] text-muted-foreground">
-                MOQ: {product.moq} units
+                Min. order: {product.moq} units
               </p>
             </div>
             {product.stock > 0 && product.stock <= 20 && (

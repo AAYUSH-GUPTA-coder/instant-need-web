@@ -89,7 +89,7 @@ export function AddToCartButton({ product }: AddToCartButtonProps) {
           <Plus className="h-4 w-4" />
         </Button>
         <span className="text-sm text-muted-foreground">
-          MOQ: {product.moq}
+          Minimum order: {product.moq} units
         </span>
       </div>
 
