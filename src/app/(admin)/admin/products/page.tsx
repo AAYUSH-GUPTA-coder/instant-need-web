@@ -62,7 +62,7 @@ function ProductsContent() {
   const params = {
     search: search || undefined,
     categoryId: categoryId || undefined,
-    ...(activeFilter !== "" ? { inStock: activeFilter === "active" } : {}),
+    ...(activeFilter !== "" ? { active: activeFilter === "active" } : {}),
     page,
   };
 

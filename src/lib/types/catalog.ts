@@ -61,6 +61,7 @@ export interface ProductFilterParams {
   minPrice?: number;
   maxPrice?: number;
   inStock?: boolean;
+  active?: boolean;
   page?: number;
   size?: number;
   sort?: string;
