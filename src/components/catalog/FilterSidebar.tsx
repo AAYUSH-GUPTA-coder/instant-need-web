@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { SlidersHorizontal, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,15 @@ export function FilterSidebar() {
   const minPrice = searchParams.get("minPrice") ?? "";
   const maxPrice = searchParams.get("maxPrice") ?? "";
   const inStock = searchParams.get("inStock") === "true";
+
+  const [minInput, setMinInput] = useState(minPrice);
+  const [maxInput, setMaxInput] = useState(maxPrice);
+  const minDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const maxDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Sync inputs when URL params change externally (e.g. clear all)
+  useEffect(() => { setMinInput(minPrice); }, [minPrice]);
+  useEffect(() => { setMaxInput(maxPrice); }, [maxPrice]);
 
   const activeFilterCount = [currentCategory, minPrice, maxPrice, inStock].filter(Boolean).length;
 
@@ -119,16 +128,28 @@ export function FilterSidebar() {
             type="number"
             placeholder="Min"
             className="h-8 text-sm"
-            defaultValue={minPrice}
-            onBlur={(e) => updateParam("minPrice", e.target.value)}
+            value={minInput}
+            onChange={(e) => {
+              setMinInput(e.target.value);
+              if (minDebounceRef.current) clearTimeout(minDebounceRef.current);
+              minDebounceRef.current = setTimeout(() => {
+                updateParam("minPrice", e.target.value);
+              }, 500);
+            }}
           />
           <span className="text-muted-foreground text-sm shrink-0">—</span>
           <Input
             type="number"
             placeholder="Max"
             className="h-8 text-sm"
-            defaultValue={maxPrice}
-            onBlur={(e) => updateParam("maxPrice", e.target.value)}
+            value={maxInput}
+            onChange={(e) => {
+              setMaxInput(e.target.value);
+              if (maxDebounceRef.current) clearTimeout(maxDebounceRef.current);
+              maxDebounceRef.current = setTimeout(() => {
+                updateParam("maxPrice", e.target.value);
+              }, 500);
+            }}
           />
         </div>
       </div>
