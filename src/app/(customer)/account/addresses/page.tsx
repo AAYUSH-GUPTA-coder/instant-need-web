@@ -17,6 +17,7 @@ import { FormError } from "@/components/forms/FormError";
 
 import { addressSchema, type AddressFormData } from "@/lib/validations/account";
 import type { AddressDTO } from "@/lib/types/customer";
+import { getApiError } from "@/lib/errors";
 import {
   useCustomerAddresses,
   useCreateAddress,
@@ -83,10 +84,7 @@ function AddressForm({ existing, onSuccess }: AddressFormProps) {
       form.reset();
       onSuccess();
     } catch (err: unknown) {
-      const msg =
-        (err as { response?: { data?: { message?: string } } })?.response?.data
-          ?.message ?? "Failed to save address.";
-      setServerError(msg);
+      setServerError(getApiError(err, "Failed to save address."));
     }
   }
 

@@ -22,6 +22,7 @@ import { useAuthStore } from "@/lib/stores/authStore";
 import { usePlaceOrder } from "@/lib/hooks/useOrders";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { getApiError } from "@/lib/errors";
 
 const PAYMENT_METHODS = [
   {
@@ -110,10 +111,7 @@ export default function CheckoutPage() {
       toast.success("Order placed successfully!");
       router.push(`/checkout/confirmation/${order.id}`);
     } catch (err: unknown) {
-      const msg =
-        (err as { response?: { data?: { message?: string } } })?.response?.data
-          ?.message ?? "Failed to place order. Please try again.";
-      setServerError(msg);
+      setServerError(getApiError(err, "Failed to place order. Please try again."));
     }
   }
 

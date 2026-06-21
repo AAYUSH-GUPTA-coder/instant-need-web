@@ -20,6 +20,10 @@ export function getApiError(
       return data;
     }
     if (data && typeof data === "object") {
+      // Backend shape: { "error": { "code": "...", "message": "..." } }
+      if (data.error && typeof data.error === "object" && typeof data.error.message === "string") {
+        return data.error.message;
+      }
       if (typeof data.message === "string") return data.message;
       if (typeof data.error === "string") return data.error;
       if (Array.isArray(data.errors) && data.errors.length > 0) {

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { type UseFormReturn } from "react-hook-form";
 import { MapPin, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +18,15 @@ export function SavedAddressPicker({ form, onAddNew }: SavedAddressPickerProps) 
   const { data: addresses, isLoading } = useCustomerAddresses();
   const selectedId = form.watch("savedAddressId");
   const error = form.formState.errors.savedAddressId;
+
+  // Auto-select default address when addresses load (if nothing already selected)
+  useEffect(() => {
+    if (!addresses || selectedId) return;
+    const defaultAddr = addresses.find((a) => a.isDefault) ?? addresses[0];
+    if (defaultAddr) {
+      form.setValue("savedAddressId", defaultAddr.id, { shouldValidate: true });
+    }
+  }, [addresses]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (isLoading) {
     return (
