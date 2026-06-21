@@ -107,7 +107,11 @@ function ProductsContent() {
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          <Select value={categoryId || "all"} onValueChange={(v) => setCategoryId(!v || v === "all" ? "" : v)}>
+          <Select
+            value={categoryId || "all"}
+            onValueChange={(v) => setCategoryId(!v || v === "all" ? "" : v)}
+            items={[{ value: "all", label: "All categories" }, ...categories.map((cat) => ({ value: cat.id, label: cat.name }))]}
+          >
             <SelectTrigger className="w-44">
               <SelectValue placeholder="All categories" />
             </SelectTrigger>

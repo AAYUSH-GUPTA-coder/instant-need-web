@@ -193,6 +193,7 @@ export function ProductForm({ product }: ProductFormProps) {
                 value={watch("categoryId")}
                 onValueChange={(v) => setValue("categoryId", v ?? "", { shouldValidate: true })}
                 disabled={catLoading}
+                items={categories.map((cat) => ({ value: cat.id, label: cat.name }))}
               >
                 <SelectTrigger id="categoryId">
                   <SelectValue placeholder={catLoading ? "Loading…" : "Select a category"} />
