@@ -224,7 +224,7 @@ export default function CheckoutPage() {
           </div>
 
           {/* Right column — order summary + CTA (sticky so button stays visible on scroll) */}
-          <div className="md:col-span-1 space-y-4 md:sticky md:top-6 md:self-start">
+          <div className="md:col-span-1 space-y-4 md:sticky md:top-6 md:self-start md:max-h-[calc(100vh-3rem)] md:overflow-y-auto">
             <OrderSummaryPanel />
             <Button
               type="submit"
