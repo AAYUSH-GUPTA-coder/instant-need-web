@@ -21,7 +21,7 @@ export function FilterSidebar({ fixedCategoryId }: FilterSidebarProps = {}) {
   const searchParams = useSearchParams();
   const { data: categories } = useCategories();
 
-  const currentCategory = fixedCategoryId ?? searchParams.get("categoryId") ?? "";
+  const currentCategory = searchParams.get("categoryId") ?? fixedCategoryId ?? "";
   const minPrice = searchParams.get("minPrice") ?? "";
   const maxPrice = searchParams.get("maxPrice") ?? "";
   const inStock = searchParams.get("inStock") === "true";

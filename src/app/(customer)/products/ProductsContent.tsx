@@ -42,7 +42,7 @@ export function ProductsContent({ fixedCategoryId }: ProductsContentProps = {}) 
   useEffect(() => {
     setSearchInput(search ?? "");
   }, [search]);
-  const categoryId = fixedCategoryId ?? searchParams.get("categoryId") ?? undefined;
+  const categoryId = searchParams.get("categoryId") ?? fixedCategoryId ?? undefined;
   const minPrice = searchParams.get("minPrice") ? Number(searchParams.get("minPrice")) : undefined;
   const maxPrice = searchParams.get("maxPrice") ? Number(searchParams.get("maxPrice")) : undefined;
   const inStock = searchParams.get("inStock") === "true" ? true : undefined;
