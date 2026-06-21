@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { ImageIcon, Loader2, X } from "lucide-react";
 import { getApiError } from "@/lib/errors";
 
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { productSchema, type ProductFormData } from "@/lib/validations/admin";
 import { useCategories } from "@/lib/hooks/useCatalog";
 import { useCreateProduct, useUpdateProduct } from "@/lib/hooks/useAdmin";
+import { adminCatalogApi } from "@/lib/api/catalog";
 import type { ProductDTO } from "@/lib/types/catalog";
 import { PricingTierEditor } from "./PricingTierEditor";
 import { ImageUploader } from "./ImageUploader";
@@ -43,6 +44,23 @@ export function ProductForm({ product }: ProductFormProps) {
 
   const createProduct = useCreateProduct();
   const updateProduct = useUpdateProduct(product?.id ?? "");
+
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setPendingFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+  }
+
+  function clearPendingImage() {
+    setPendingFile(null);
+    setPreviewUrl(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const methods = useForm<ProductFormData>({
@@ -110,8 +128,20 @@ export function ProductForm({ product }: ProductFormProps) {
         toast.success("Product updated");
       } else {
         const created = await createProduct.mutateAsync(payload);
-        toast.success("Product created — you can now upload images");
-        // Redirect to edit page so the admin can immediately upload images
+        if (pendingFile) {
+          try {
+            await adminCatalogApi.uploadImage(
+              created.id,
+              pendingFile,
+              pendingFile.name.replace(/\.[^.]+$/, ""),
+            );
+          } catch {
+            toast.warning("Product created but image upload failed — you can upload it from the edit page.");
+            router.push(`/admin/products/${created.id}/edit`);
+            return;
+          }
+        }
+        toast.success("Product created");
         router.push(`/admin/products/${created.id}/edit`);
       }
     } catch (err) {
@@ -254,12 +284,61 @@ export function ProductForm({ product }: ProductFormProps) {
           </CardContent>
         </Card>
 
-        {/* Images — only shown when editing an existing product */}
-        {isEdit && product && (
-          <ImageUploader
-            productId={product.id}
-            images={product.images ?? []}
-          />
+        {/* Image — pending file picker in create mode, full uploader in edit mode */}
+        {!isEdit ? (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Product Image</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {previewUrl ? (
+                <div className="relative w-40 h-40 rounded-lg overflow-hidden border bg-muted">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={clearPendingImage}
+                    className="absolute top-1 right-1 bg-background/80 rounded-full p-1 hover:bg-background transition-colors"
+                    aria-label="Remove image"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ) : (
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => fileInputRef.current?.click()}
+                  onKeyDown={(e) => e.key === "Enter" && fileInputRef.current?.click()}
+                  className="flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-muted-foreground/30 p-8 text-center cursor-pointer hover:border-primary/50 hover:bg-muted/50 transition-colors"
+                >
+                  <div className="rounded-full bg-muted p-3">
+                    <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">Add product image</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      JPEG, PNG, WebP · Max 5 MB
+                    </p>
+                  </div>
+                </div>
+              )}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                className="hidden"
+                onChange={handleFileChange}
+              />
+            </CardContent>
+          </Card>
+        ) : (
+          product && (
+            <ImageUploader
+              productId={product.id}
+              images={product.images ?? []}
+            />
+          )
         )}
 
         {/* Actions */}
