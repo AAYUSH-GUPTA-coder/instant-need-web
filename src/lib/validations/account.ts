@@ -27,9 +27,7 @@ export const addressSchema = z.object({
   country: z.string().min(1, "Country is required"),
   phoneNumber: z
     .string()
-    .regex(/^[6-9]\d{9}$/, "Enter a valid 10-digit mobile number")
-    .optional()
-    .or(z.literal("")),
+    .regex(/^[6-9]\d{9}$/, "Enter a valid 10-digit mobile number"),
   isDefault: z.boolean().optional(),
 });
 

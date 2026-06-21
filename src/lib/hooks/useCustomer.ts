@@ -44,6 +44,17 @@ export function useCreateAddress() {
   });
 }
 
+export function useUpdateAddress() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, body }: { id: string; body: Partial<CreateAddressRequest> }) =>
+      customerApi.updateAddress(id, body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: customerKeys.addresses() });
+    },
+  });
+}
+
 export function useDeleteAddress() {
   const queryClient = useQueryClient();
   return useMutation({

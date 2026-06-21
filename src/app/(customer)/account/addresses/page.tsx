@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { MapPin, Plus, Trash2, Star, Loader2, ChevronDown, ChevronUp } from "lucide-react";
+import { MapPin, Plus, Trash2, Star, Loader2, Pencil } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -16,38 +16,70 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { FormError } from "@/components/forms/FormError";
 
 import { addressSchema, type AddressFormData } from "@/lib/validations/account";
+import type { AddressDTO } from "@/lib/types/customer";
 import {
   useCustomerAddresses,
   useCreateAddress,
+  useUpdateAddress,
   useDeleteAddress,
   useSetDefaultAddress,
 } from "@/lib/hooks/useCustomer";
 
-function AddressForm({ onSuccess }: { onSuccess: () => void }) {
-  const { mutateAsync: createAddress, isPending } = useCreateAddress();
+interface AddressFormProps {
+  /** When provided the form is in edit mode */
+  existing?: AddressDTO;
+  onSuccess: () => void;
+}
+
+function AddressForm({ existing, onSuccess }: AddressFormProps) {
+  const isEdit = !!existing;
+  const { mutateAsync: createAddress, isPending: isCreating } = useCreateAddress();
+  const { mutateAsync: updateAddress, isPending: isUpdating } = useUpdateAddress();
+  const isPending = isCreating || isUpdating;
   const [serverError, setServerError] = useState("");
 
   const form = useForm<AddressFormData>({
     resolver: zodResolver(addressSchema),
-    defaultValues: { country: "India" },
+    defaultValues: existing
+      ? {
+          label: existing.label ?? "",
+          fullName: existing.fullName,
+          addressLine1: existing.addressLine1,
+          addressLine2: existing.addressLine2 ?? "",
+          city: existing.city,
+          state: existing.state,
+          postalCode: existing.postalCode,
+          country: existing.country,
+          phoneNumber: existing.phoneNumber ?? "",
+          isDefault: existing.isDefault,
+        }
+      : { country: "India", isDefault: false },
   });
+
+  const { register, formState: { errors } } = form;
 
   async function onSubmit(data: AddressFormData) {
     setServerError("");
+    const body = {
+      label: data.label || undefined,
+      fullName: data.fullName,
+      addressLine1: data.addressLine1,
+      addressLine2: data.addressLine2 || undefined,
+      city: data.city,
+      state: data.state,
+      postalCode: data.postalCode,
+      country: data.country,
+      phoneNumber: data.phoneNumber,
+      isDefault: data.isDefault,
+    };
     try {
-      await createAddress({
-        label: data.label || undefined,
-        fullName: data.fullName,
-        addressLine1: data.addressLine1,
-        addressLine2: data.addressLine2,
-        city: data.city,
-        state: data.state,
-        postalCode: data.postalCode,
-        country: data.country,
-        phoneNumber: data.phoneNumber || undefined,
-        isDefault: data.isDefault,
-      });
-      toast.success("Address saved");
+      if (isEdit && existing) {
+        await updateAddress({ id: existing.id, body });
+        toast.success("Address updated");
+      } else {
+        await createAddress(body);
+        toast.success("Address saved");
+      }
       form.reset();
       onSuccess();
     } catch (err: unknown) {
@@ -57,8 +89,6 @@ function AddressForm({ onSuccess }: { onSuccess: () => void }) {
       setServerError(msg);
     }
   }
-
-  const { register, formState: { errors } } = form;
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pt-2">
@@ -77,7 +107,7 @@ function AddressForm({ onSuccess }: { onSuccess: () => void }) {
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="a-phone">Phone</Label>
+        <Label htmlFor="a-phone">Phone *</Label>
         <div className="flex gap-2">
           <span className="flex items-center rounded-lg border border-input px-3 text-sm text-muted-foreground bg-muted/40 shrink-0">+91</span>
           <Input id="a-phone" type="tel" placeholder="9876543210" aria-invalid={!!errors.phoneNumber} {...register("phoneNumber")} />
@@ -122,7 +152,7 @@ function AddressForm({ onSuccess }: { onSuccess: () => void }) {
       <div className="flex gap-2 pt-1">
         <Button type="submit" size="sm" disabled={isPending}>
           {isPending && <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />}
-          Save address
+          {isEdit ? "Update address" : "Save address"}
         </Button>
         <Button type="button" variant="ghost" size="sm" onClick={onSuccess}>Cancel</Button>
       </div>
@@ -134,7 +164,8 @@ export default function AddressesPage() {
   const { data: addresses, isLoading } = useCustomerAddresses();
   const { mutateAsync: deleteAddress, isPending: isDeleting } = useDeleteAddress();
   const { mutateAsync: setDefault, isPending: isSettingDefault } = useSetDefaultAddress();
-  const [showForm, setShowForm] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   async function handleDelete(id: string) {
     if (!confirm("Delete this address?")) return;
@@ -162,17 +193,17 @@ export default function AddressesPage() {
           <h2 className="text-lg font-semibold">Addresses</h2>
           <p className="text-sm text-muted-foreground">Manage your delivery addresses</p>
         </div>
-        <Button size="sm" variant="outline" onClick={() => setShowForm((v) => !v)}>
-          {showForm ? <ChevronUp className="mr-2 h-4 w-4" /> : <Plus className="mr-2 h-4 w-4" />}
-          {showForm ? "Close" : "Add address"}
+        <Button size="sm" variant="outline" onClick={() => { setShowAddForm((v) => !v); setEditingId(null); }}>
+          <Plus className="mr-2 h-4 w-4" />
+          Add address
         </Button>
       </div>
 
-      {/* Add address form — inline expand */}
-      {showForm && (
+      {/* Add address form */}
+      {showAddForm && (
         <div className="rounded-xl border bg-card p-5">
           <p className="text-sm font-medium mb-4">New address</p>
-          <AddressForm onSuccess={() => setShowForm(false)} />
+          <AddressForm onSuccess={() => setShowAddForm(false)} />
         </div>
       )}
 
@@ -188,7 +219,7 @@ export default function AddressesPage() {
           title="No addresses saved"
           description="Add a delivery address to speed up checkout."
           action={
-            <Button size="sm" onClick={() => setShowForm(true)}>
+            <Button size="sm" onClick={() => setShowAddForm(true)}>
               <Plus className="mr-2 h-4 w-4" /> Add address
             </Button>
           }
@@ -219,6 +250,14 @@ export default function AddressesPage() {
                   <Button
                     variant="ghost"
                     size="sm"
+                    className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
+                    onClick={() => { setEditingId(editingId === addr.id ? null : addr.id); setShowAddForm(false); }}
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
                     className="h-7 px-2 text-xs text-muted-foreground hover:text-destructive"
                     onClick={() => handleDelete(addr.id)}
                     disabled={isDeleting}
@@ -228,11 +267,24 @@ export default function AddressesPage() {
                 </div>
               </div>
 
-              <div className="text-sm text-muted-foreground space-y-0.5">
-                <p>{addr.addressLine1}{addr.addressLine2 && `, ${addr.addressLine2}`}</p>
-                <p>{addr.city}, {addr.state} – {addr.postalCode}</p>
-                {addr.phoneNumber && <p>+91 {addr.phoneNumber}</p>}
-              </div>
+              {/* Address summary — hidden when editing */}
+              {editingId !== addr.id && (
+                <div className="text-sm text-muted-foreground space-y-0.5">
+                  <p>{addr.addressLine1}{addr.addressLine2 && `, ${addr.addressLine2}`}</p>
+                  <p>{addr.city}, {addr.state} – {addr.postalCode}</p>
+                  {addr.phoneNumber && <p>+91 {addr.phoneNumber}</p>}
+                </div>
+              )}
+
+              {/* Inline edit form */}
+              {editingId === addr.id && (
+                <div className="pt-2 border-t mt-2">
+                  <AddressForm
+                    existing={addr}
+                    onSuccess={() => setEditingId(null)}
+                  />
+                </div>
+              )}
             </div>
           ))}
         </div>
