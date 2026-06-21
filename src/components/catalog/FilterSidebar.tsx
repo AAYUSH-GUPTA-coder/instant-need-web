@@ -21,7 +21,10 @@ export function FilterSidebar({ fixedCategoryId }: FilterSidebarProps = {}) {
   const searchParams = useSearchParams();
   const { data: categories } = useCategories();
 
-  const currentCategory = searchParams.get("categoryId") ?? fixedCategoryId ?? "";
+  const rawCategoryParam = searchParams.get("categoryId");
+  // "all" sentinel = user explicitly cleared the category on a fixed-category page
+  const currentCategory = rawCategoryParam === "all" ? ""
+    : rawCategoryParam ?? fixedCategoryId ?? "";
   const minPrice = searchParams.get("minPrice") ?? "";
   const maxPrice = searchParams.get("maxPrice") ?? "";
   const inStock = searchParams.get("inStock") === "true";
@@ -52,7 +55,12 @@ export function FilterSidebar({ fixedCategoryId }: FilterSidebarProps = {}) {
   );
 
   function clearAll() {
-    router.push(pathname, { scroll: false });
+    if (fixedCategoryId) {
+      // Keep the sentinel so fixedCategoryId doesn't snap back
+      router.push(`${pathname}?categoryId=all`, { scroll: false });
+    } else {
+      router.push(pathname, { scroll: false });
+    }
   }
 
   return (
@@ -89,7 +97,7 @@ export function FilterSidebar({ fixedCategoryId }: FilterSidebarProps = {}) {
             </Label>
             <div className="flex flex-col gap-1">
               <button
-                onClick={() => updateParam("categoryId", null)}
+                onClick={() => updateParam("categoryId", fixedCategoryId ? "all" : null)}
                 className={cn(
                   "text-left text-sm px-2 py-1.5 rounded-md transition-colors",
                   !currentCategory

@@ -42,7 +42,10 @@ export function ProductsContent({ fixedCategoryId }: ProductsContentProps = {}) 
   useEffect(() => {
     setSearchInput(search ?? "");
   }, [search]);
-  const categoryId = searchParams.get("categoryId") ?? fixedCategoryId ?? undefined;
+  const rawCategoryParam = searchParams.get("categoryId");
+  // "all" sentinel = user explicitly cleared the category on a fixed-category page
+  const categoryId = rawCategoryParam === "all" ? undefined
+    : rawCategoryParam ?? fixedCategoryId ?? undefined;
   const minPrice = searchParams.get("minPrice") ? Number(searchParams.get("minPrice")) : undefined;
   const maxPrice = searchParams.get("maxPrice") ? Number(searchParams.get("maxPrice")) : undefined;
   const inStock = searchParams.get("inStock") === "true" ? true : undefined;
