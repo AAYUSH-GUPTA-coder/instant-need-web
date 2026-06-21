@@ -11,7 +11,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { useProducts } from "@/lib/hooks/useCatalog";
 import { calcTotalPages } from "@/lib/types/common";
 import { useRouter, usePathname } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const PAGE_SIZE = 20;
 
@@ -29,6 +29,14 @@ export function ProductsContent() {
 
   const page = parseInt(searchParams.get("page") ?? "0", 10); // 0-indexed in URL
   const search = searchParams.get("search") ?? undefined;
+
+  const [searchInput, setSearchInput] = useState(search ?? "");
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Keep input in sync if URL param changes externally (e.g. clear all filters)
+  useEffect(() => {
+    setSearchInput(search ?? "");
+  }, [search]);
   const categoryId = searchParams.get("categoryId") ?? undefined;
   const minPrice = searchParams.get("minPrice") ? Number(searchParams.get("minPrice")) : undefined;
   const maxPrice = searchParams.get("maxPrice") ? Number(searchParams.get("maxPrice")) : undefined;
@@ -78,14 +86,16 @@ export function ProductsContent() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
             <Input
               placeholder="Search products…"
-              defaultValue={search}
+              value={searchInput}
               className="pl-9"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  updateParam("search", (e.target as HTMLInputElement).value);
-                }
+              onChange={(e) => {
+                const val = e.target.value;
+                setSearchInput(val);
+                if (debounceRef.current) clearTimeout(debounceRef.current);
+                debounceRef.current = setTimeout(() => {
+                  updateParam("search", val);
+                }, 350);
               }}
-              onBlur={(e) => updateParam("search", e.target.value)}
             />
           </div>
           <Select
