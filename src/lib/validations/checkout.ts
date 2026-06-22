@@ -12,9 +12,7 @@ export const shippingAddressSchema = z.object({
   country: z.string().default("India"),
   phoneNumber: z
     .string()
-    .regex(/^[6-9]\d{9}$/, "Enter a valid 10-digit mobile number")
-    .optional()
-    .or(z.literal("")),
+    .regex(/^[6-9]\d{9}$/, "Enter a valid 10-digit mobile number"),
   saveAddress: z.boolean().optional(),
 });
 
@@ -41,6 +39,7 @@ export const checkoutSchema = z
       // new address — required fields
       const required: Array<keyof z.infer<typeof shippingAddressSchema>> = [
         "fullName",
+        "phoneNumber",
         "addressLine1",
         "city",
         "state",

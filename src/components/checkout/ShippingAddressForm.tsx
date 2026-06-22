@@ -26,7 +26,7 @@ export function ShippingAddressForm({ form }: ShippingAddressFormProps) {
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="phoneNumber">Phone number</Label>
+        <Label htmlFor="phoneNumber">Phone number *</Label>
         <div className="flex gap-2">
           <span className="flex items-center rounded-lg border border-input px-3 text-sm text-muted-foreground bg-muted/40 shrink-0">
             +91
