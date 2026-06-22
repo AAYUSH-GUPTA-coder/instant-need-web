@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { use } from "react";
-import { ChevronRight, Package } from "lucide-react";
+import { ChevronRight, ChevronLeft, Package } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -88,7 +88,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
       <div className="grid md:grid-cols-2 gap-10">
         {/* Image gallery */}
         <div className="space-y-3">
-          <div className="relative aspect-square rounded-xl bg-muted overflow-hidden border">
+          <div className="relative aspect-square rounded-xl bg-muted overflow-hidden border group">
             {primaryImage ? (
               <Image
                 src={primaryImage}
@@ -102,6 +102,40 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
               <div className="flex h-full items-center justify-center">
                 <Package className="h-20 w-20 text-muted-foreground/20" strokeWidth={1} />
               </div>
+            )}
+
+            {/* Prev / Next arrows — only shown when there are multiple images */}
+            {images.length > 1 && (
+              <>
+                <button
+                  onClick={() => setActiveImage((activeImage - 1 + images.length) % images.length)}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-background/80 shadow border opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background"
+                  aria-label="Previous image"
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={() => setActiveImage((activeImage + 1) % images.length)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-background/80 shadow border opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background"
+                  aria-label="Next image"
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </button>
+
+                {/* Dot indicators */}
+                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                  {images.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setActiveImage(i)}
+                      className={`h-1.5 rounded-full transition-all ${
+                        i === activeImage ? "w-4 bg-white" : "w-1.5 bg-white/60"
+                      }`}
+                      aria-label={`Go to image ${i + 1}`}
+                    />
+                  ))}
+                </div>
+              </>
             )}
           </div>
 
