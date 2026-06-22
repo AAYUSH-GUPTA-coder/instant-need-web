@@ -49,10 +49,10 @@ export function ProductsContent({ fixedCategoryId }: ProductsContentProps = {}) 
   const minPrice = searchParams.get("minPrice") ? Number(searchParams.get("minPrice")) : undefined;
   const maxPrice = searchParams.get("maxPrice") ? Number(searchParams.get("maxPrice")) : undefined;
   const inStock = searchParams.get("inStock") === "true" ? true : undefined;
-  const sort = searchParams.get("sort") ?? "";
+  const sort = searchParams.get("sort") || undefined;
 
   const { data, isLoading } = useProducts({
-    search,
+    search: search || undefined,
     categoryId,
     minPrice,
     maxPrice,

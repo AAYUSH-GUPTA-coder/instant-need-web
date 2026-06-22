@@ -25,6 +25,15 @@ const apiClient: AxiosInstance = axios.create({
   baseURL: BASE_URL,
   headers: { "Content-Type": "application/json" },
   timeout: 15_000,
+  paramsSerializer: (params) => {
+    const sp = new URLSearchParams();
+    for (const [k, v] of Object.entries(params)) {
+      if (v !== undefined && v !== null && v !== "") {
+        sp.append(k, String(v));
+      }
+    }
+    return sp.toString();
+  },
 });
 
 // ── Request interceptor — attach access token ─────────────────────────────
