@@ -47,7 +47,7 @@ export function AddToCartButton({ product }: AddToCartButtonProps) {
       pricingTiers: product.pricingTiers ?? [],
     });
     toast.success(`${product.name} added to cart`, {
-      description: `${qty} units added`,
+      description: `${qty} items added`,
     });
   }
 
@@ -90,7 +90,7 @@ export function AddToCartButton({ product }: AddToCartButtonProps) {
           <Plus className="h-4 w-4" />
         </Button>
         <span className="text-sm text-muted-foreground">
-          Minimum order: {product.moq} units
+          Minimum order: {product.moq} items
         </span>
       </div>
 

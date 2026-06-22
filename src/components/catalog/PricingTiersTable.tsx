@@ -14,7 +14,7 @@ export function PricingTiersTable({ tiers, currencyCode, basePrice }: PricingTie
         <p className="font-medium text-foreground mb-1">Base price</p>
         <p className="text-xl font-bold text-foreground">
           {formatCurrency(basePrice, currencyCode)}
-          <span className="text-sm font-normal text-muted-foreground ml-1">/ unit</span>
+          <span className="text-sm font-normal text-muted-foreground ml-1">/ item</span>
         </p>
       </div>
     );
@@ -35,11 +35,11 @@ export function PricingTiersTable({ tiers, currencyCode, basePrice }: PricingTie
           >
             <span className="text-sm text-muted-foreground">
               {tier.minQty}
-              {tier.maxQty ? `–${tier.maxQty}` : "+"} units
+              {tier.maxQty ? `–${tier.maxQty}` : "+"} items
             </span>
             <span className="text-sm font-semibold">
               {formatCurrency(tier.unitPrice, tier.currencyCode)}
-              <span className="text-xs font-normal text-muted-foreground ml-1">/ unit</span>
+              <span className="text-xs font-normal text-muted-foreground ml-1">/ item</span>
             </span>
           </div>
         ))}
