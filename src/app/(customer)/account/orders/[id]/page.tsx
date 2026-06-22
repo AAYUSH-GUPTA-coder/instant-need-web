@@ -2,16 +2,20 @@
 
 import { use } from "react";
 import Link from "next/link";
-import { ChevronLeft, Package, MapPin, CreditCard, X, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ChevronLeft, Package, MapPin, CreditCard } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { EmptyState } from "@/components/ui/empty-state";
 import { OrderStatusTimeline } from "@/components/account/OrderStatusTimeline";
-import { useOrder, useCancelOrder } from "@/lib/hooks/useOrders";
+import { useOrder } from "@/lib/hooks/useOrders";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
-import { toast } from "sonner";
+
+function orderRef(id: string) {
+  const letters = id.replace(/[^a-fA-F]/g, "").slice(0, 2).toUpperCase();
+  const digits = id.replace(/\D/g, "").slice(0, 4);
+  return `${letters}-${digits}`;
+}
 
 interface OrderDetailPageProps {
   params: Promise<{ id: string }>;
@@ -20,17 +24,6 @@ interface OrderDetailPageProps {
 export default function OrderDetailPage({ params }: OrderDetailPageProps) {
   const { id } = use(params);
   const { data: order, isLoading } = useOrder(id);
-  const { mutateAsync: cancelOrder, isPending: isCancelling } = useCancelOrder();
-
-  async function handleCancel() {
-    if (!confirm("Are you sure you want to cancel this order?")) return;
-    try {
-      await cancelOrder(id);
-      toast.success("Order cancelled successfully");
-    } catch {
-      toast.error("Could not cancel order. Please contact support.");
-    }
-  }
 
   if (isLoading) {
     return (
@@ -58,8 +51,6 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
     );
   }
 
-  const canCancel = order.status === "PENDING";
-
   return (
     <div className="space-y-6">
       {/* Back + header */}
@@ -72,33 +63,16 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
           Back to orders
         </Link>
 
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <h2 className="text-lg font-semibold font-mono">{order.orderNumber}</h2>
-              <StatusBadge status={order.status} />
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Placed on {formatDateTime(order.placedAt)}
-            </p>
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <h2 className="text-lg font-semibold font-mono">
+              #{orderRef(order.id)}
+            </h2>
+            <StatusBadge status={order.status} />
           </div>
-
-          {canCancel && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleCancel}
-              disabled={isCancelling}
-              className="text-destructive border-destructive/30 hover:bg-destructive/10"
-            >
-              {isCancelling ? (
-                <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-              ) : (
-                <X className="mr-2 h-3.5 w-3.5" />
-              )}
-              Cancel order
-            </Button>
-          )}
+          <p className="text-sm text-muted-foreground">
+            Placed on {formatDateTime(order.placedAt)}
+          </p>
         </div>
       </div>
 

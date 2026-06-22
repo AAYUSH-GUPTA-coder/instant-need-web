@@ -16,6 +16,12 @@ import { cn } from "@/lib/utils";
 
 const PAGE_SIZE = 10;
 
+function orderRef(id: string) {
+  const letters = id.replace(/[^a-fA-F]/g, "").slice(0, 2).toUpperCase();
+  const digits = id.replace(/\D/g, "").slice(0, 4);
+  return `${letters}-${digits}`;
+}
+
 export function OrdersContent() {
   const searchParams = useSearchParams();
   const page = parseInt(searchParams.get("page") ?? "0", 10);
@@ -65,7 +71,7 @@ export function OrdersContent() {
             <div className="flex-1 min-w-0 space-y-1">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-sm font-medium font-mono">
-                  {order.orderNumber}
+                  #{orderRef(order.id)}
                 </span>
                 <StatusBadge status={order.status} />
               </div>

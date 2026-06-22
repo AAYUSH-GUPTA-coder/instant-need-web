@@ -19,6 +19,12 @@ import { useOrder } from "@/lib/hooks/useOrders";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
+function orderRef(id: string) {
+  const letters = id.replace(/[^a-fA-F]/g, "").slice(0, 2).toUpperCase();
+  const digits = id.replace(/\D/g, "").slice(0, 4);
+  return `${letters}-${digits}`;
+}
+
 interface ConfirmationPageProps {
   params: Promise<{ orderId: string }>;
 }
@@ -67,7 +73,7 @@ export default function OrderConfirmationPage({ params }: ConfirmationPageProps)
         </p>
         <div className="inline-flex items-center gap-2 rounded-full bg-muted px-4 py-1.5 text-sm font-medium">
           <ClipboardList className="h-4 w-4" />
-          {order.orderNumber}
+          #{orderRef(order.id)}
         </div>
       </div>
 
