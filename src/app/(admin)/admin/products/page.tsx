@@ -53,7 +53,7 @@ function ProductsContent() {
 
   const [search, setSearch] = useState(searchParams.get("search") ?? "");
   const [categoryId, setCategoryId] = useState(searchParams.get("categoryId") ?? "");
-  const [activeFilter, setActiveFilter] = useState(searchParams.get("active") ?? "active");
+  const [activeFilter, setActiveFilter] = useState(searchParams.get("active") ?? "");
   const page = parseInt(searchParams.get("page") ?? "1", 10); // 1-indexed
 
   const { data: categoriesData } = useCategories();
