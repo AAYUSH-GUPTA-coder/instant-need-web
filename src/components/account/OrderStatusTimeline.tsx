@@ -39,8 +39,8 @@ export function OrderStatusTimeline({ status }: OrderStatusTimelineProps) {
   return (
     <div className="relative flex items-start gap-0">
       {STEPS.map((step, i) => {
-        const done    = i <  currentIdx;
-        const current = i === currentIdx;
+        const done    = i <  currentIdx || (i === currentIdx && i === STEPS.length - 1);
+        const current = i === currentIdx && i < STEPS.length - 1;
         const future  = i >  currentIdx;
         const last    = i === STEPS.length - 1;
 
@@ -73,7 +73,7 @@ export function OrderStatusTimeline({ status }: OrderStatusTimelineProps) {
               {/* Right segment */}
               <div className={cn(
                 "flex-1 h-0.5",
-                last ? "invisible" : done ? "bg-primary" : "bg-border"
+                last ? "invisible" : (done || current) ? "bg-primary" : "bg-border"
               )} />
             </div>
 
@@ -85,7 +85,7 @@ export function OrderStatusTimeline({ status }: OrderStatusTimelineProps) {
               )}>
                 {step.label}
               </p>
-              {current && (
+              {(current || (done && i === STEPS.length - 1)) && (
                 <p className="text-[10px] text-muted-foreground mt-0.5">{step.description}</p>
               )}
             </div>
