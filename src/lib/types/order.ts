@@ -25,6 +25,7 @@ export interface OrderItemDTO {
   unitPrice: number;
   lineTotal: number;
   currencyCode: string;
+  imageUrl?: string;
 }
 
 export interface OrderDTO {

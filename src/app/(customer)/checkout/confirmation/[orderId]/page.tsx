@@ -257,13 +257,10 @@ export default function OrderConfirmationPage({ params }: ConfirmationPageProps)
               <td style={{ verticalAlign: "top" }}>
                 {/* Logo */}
                 <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <svg width="46" height="46" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="46" height="46" rx="6" fill={NAVY}/>
-                    <path d="M9 11h4l4 16h16l4-12H16" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-                    <circle cx="20" cy="31" r="2.2" fill="white"/>
-                    <circle cx="30" cy="31" r="2.2" fill="white"/>
-                    <circle cx="32" cy="15" r="6" fill={BLUE} stroke="white" strokeWidth="1.5"/>
-                    <path d="M29.5 15l2 2 3.5-3.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  {/* Same SVG as InstantNeedIcon in brand.tsx */}
+                  <svg width="48" height="48" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="64" height="64" rx="15" fill="#2563eb"/>
+                    <path d="M35 10L19 37L30 37L24 54L40 27L30 27Z" fill="white"/>
                   </svg>
                   <div>
                     <div style={{ fontSize: "22px", fontWeight: "bold", lineHeight: 1 }}>
@@ -287,7 +284,7 @@ export default function OrderConfirmationPage({ params }: ConfirmationPageProps)
         </table>
 
         {/* ── Company info + Order Placed ── */}
-        <table style={{ width: "100%", marginBottom: "12px" }}>
+        <table style={{ width: "100%", marginBottom: "18px" }}>
           <tbody>
             <tr>
               <td style={{ verticalAlign: "top", width: "55%" }}>
@@ -356,8 +353,13 @@ export default function OrderConfirmationPage({ params }: ConfirmationPageProps)
                   <td style={{ padding: "8px 10px", textAlign: "center", color: "#666" }}>{i + 1}</td>
                   <td style={{ padding: "8px 10px" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                      <div style={{ width: "32px", height: "32px", backgroundColor: "#eef2fb", border: "1px solid #d0d8ea", borderRadius: "4px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8899bb" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                      <div style={{ width: "36px", height: "36px", backgroundColor: "#eef2fb", border: "1px solid #d0d8ea", borderRadius: "4px", overflow: "hidden", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        {item.imageUrl ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={item.imageUrl} alt={item.productName} style={{ width: "36px", height: "36px", objectFit: "cover" }} />
+                        ) : (
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8899bb" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                        )}
                       </div>
                       <div>
                         <div style={{ fontWeight: "600", marginBottom: "1px" }}>{item.productName}</div>
@@ -536,7 +538,10 @@ export default function OrderConfirmationPage({ params }: ConfirmationPageProps)
         {/* ── Bottom bar ── */}
         <div style={{ backgroundColor: NAVY, color: "white", padding: "8px 14px", borderRadius: "4px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "7px", fontWeight: "bold", fontSize: "12px" }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            <svg width="16" height="16" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="64" height="64" rx="15" fill="white" fillOpacity="0.2"/>
+              <path d="M35 10L19 37L30 37L24 54L40 27L30 27Z" fill="white"/>
+            </svg>
             InstantNeed
           </div>
           <div style={{ color: "#c0ceea", fontSize: "10px" }}>
