@@ -19,10 +19,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { useAdminCustomer } from "@/lib/hooks/useAdmin";
+import { useAdminCustomer, useAdminCustomerAddresses } from "@/lib/hooks/useAdmin";
 import { formatCurrency } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { MapPin } from "lucide-react";
 
 interface CustomerDetailPageProps {
   params: Promise<{ id: string }>;
@@ -43,6 +44,10 @@ export default function CustomerDetailPage({ params }: CustomerDetailPageProps) 
   // The admin customer API response may have nested profile + orders
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const customer = data as any;
+
+  const { data: fetchedAddresses } = useAdminCustomerAddresses(id, customer);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const addresses: any[] = customer?.addresses ?? fetchedAddresses ?? [];
 
   if (isLoading) {
     return (
@@ -168,6 +173,54 @@ export default function CustomerDetailPage({ params }: CustomerDetailPageProps) 
             </Card>
           </div>
         )}
+
+        {/* Addresses */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm">Saved Addresses</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {addresses.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-8 text-muted-foreground gap-2">
+                <MapPin className="h-6 w-6 opacity-30" />
+                <p className="text-sm">No saved addresses</p>
+              </div>
+            ) : (
+              <div className="grid sm:grid-cols-2 gap-3">
+                {addresses.map((addr: any, i: number) => {
+                  const line1: string = addr.addressLine1 ?? addr.line1 ?? "";
+                  const line2: string | undefined = addr.addressLine2 ?? addr.line2;
+                  const isDefault: boolean = addr.isDefault ?? (addr.id === customer?.defaultShippingAddressId);
+                  return (
+                    <div key={addr.id ?? i} className="rounded-lg border p-4 text-sm space-y-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-medium">{addr.fullName}</span>
+                        {addr.label && (
+                          <span className="text-xs bg-muted text-muted-foreground rounded-full px-2 py-0.5">
+                            {addr.label}
+                          </span>
+                        )}
+                        {isDefault && (
+                          <span className="text-xs bg-primary text-primary-foreground rounded-full px-2 py-0.5">
+                            Default
+                          </span>
+                        )}
+                      </div>
+                      {line1 && <p className="text-muted-foreground">{line1}{line2 ? `, ${line2}` : ""}</p>}
+                      <p className="text-muted-foreground">
+                        {addr.city}, {addr.state} {addr.postalCode}
+                      </p>
+                      <p className="text-muted-foreground">{addr.country}</p>
+                      {addr.phoneNumber && (
+                        <p className="text-muted-foreground">{addr.phoneNumber}</p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Order History */}
         <Card>

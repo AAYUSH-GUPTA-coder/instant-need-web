@@ -41,4 +41,7 @@ export const adminCustomerApi = {
 
   getCustomer: (id: string) =>
     apiClient.get(`/admin/customers/${id}`).then((r) => r.data),
+
+  getCustomerAddresses: (id: string) =>
+    apiClient.get<AddressDTO[]>(`/admin/customers/${id}/addresses`).then((r) => r.data),
 };

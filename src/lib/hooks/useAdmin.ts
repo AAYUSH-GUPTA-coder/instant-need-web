@@ -141,6 +141,16 @@ export function useAdminCustomer(id: string) {
   });
 }
 
+export function useAdminCustomerAddresses(customerId: string, customerData: any) {
+  const embeddedAddresses = customerData?.addresses ?? null;
+  return useQuery({
+    queryKey: [...adminCustomerKeys.detail(customerId), "addresses"],
+    queryFn: () => adminCustomerApi.getCustomerAddresses(customerId),
+    enabled: !!customerId && embeddedAddresses === null,
+    retry: false,
+  });
+}
+
 // ── Categories ────────────────────────────────────────────────────────────
 
 export const adminCategoryKeys = {
