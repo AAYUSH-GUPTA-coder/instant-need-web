@@ -75,7 +75,6 @@ export const adminCatalogApi = {
       .post<{ id: string; url: string; altText?: string; sortOrder: number }>(
         `/admin/products/${productId}/images`,
         form,
-        { headers: { "Content-Type": "multipart/form-data" } }
       )
       .then((r) => r.data);
   },
@@ -101,9 +100,7 @@ export const adminCatalogApi = {
     const form = new FormData();
     form.append("file", file);
     return apiClient
-      .post<{ id: string; imageUrl: string }>(`/admin/categories/${id}/image`, form, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
+      .post<{ id: string; imageUrl: string }>(`/admin/categories/${id}/image`, form)
       .then((r) => r.data);
   },
 
