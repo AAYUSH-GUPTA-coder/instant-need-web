@@ -16,9 +16,11 @@ export function CartLineItem({ item }: CartLineItemProps) {
   const updateQty = useCartStore((s) => s.updateQty);
   const removeItem = useCartStore((s) => s.removeItem);
 
+  const stockLimit = item.stock ?? Infinity;
+
   function handleQty(value: string) {
     const n = parseInt(value, 10);
-    if (!isNaN(n) && n >= item.moq && n <= item.stock) {
+    if (!isNaN(n) && n >= item.moq && n <= stockLimit) {
       updateQty(item.productId, n);
     }
   }
@@ -88,8 +90,8 @@ export function CartLineItem({ item }: CartLineItemProps) {
               variant="outline"
               size="icon"
               className="h-7 w-7"
-              onClick={() => updateQty(item.productId, Math.min(item.stock, item.quantity + 1))}
-              disabled={item.quantity >= item.stock}
+              onClick={() => updateQty(item.productId, Math.min(stockLimit, item.quantity + 1))}
+              disabled={item.quantity >= stockLimit}
               aria-label="Increase quantity"
             >
               <Plus className="h-3 w-3" />

@@ -14,7 +14,7 @@ export interface CartItem {
   unitPrice: number;
   currencyCode: string;
   moq: number;
-  stock: number;
+  stock?: number;
   pricingTiers: PricingTierDTO[];
 }
 
@@ -56,7 +56,7 @@ export const useCartStore = create<CartState>()(
             return {
               items: state.items.map((i) =>
                 i.productId === incoming.productId
-                  ? { ...i, quantity: newQty, unitPrice: priceForQty(i.pricingTiers, newQty, i.unitPrice) }
+                  ? { ...i, stock: incoming.stock ?? i.stock, quantity: newQty, unitPrice: priceForQty(i.pricingTiers, newQty, i.unitPrice) }
                   : i
               ),
             };
