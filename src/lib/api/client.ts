@@ -38,6 +38,10 @@ const apiClient: AxiosInstance = axios.create({
 
 // ── Request interceptor — attach access token ─────────────────────────────
 apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+  // Let the browser set Content-Type (with boundary) for multipart uploads
+  if (config.data instanceof FormData) {
+    delete config.headers["Content-Type"];
+  }
   const token = getAccessToken?.();
   if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`;
