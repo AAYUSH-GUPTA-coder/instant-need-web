@@ -43,6 +43,7 @@ export function AddToCartButton({ product }: AddToCartButtonProps) {
       unitPrice: product.basePrice,
       currencyCode: product.currencyCode,
       moq: product.moq,
+      stock: product.stock,
       quantity: qty,
       pricingTiers: product.pricingTiers ?? [],
     });

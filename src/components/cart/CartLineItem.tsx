@@ -18,7 +18,7 @@ export function CartLineItem({ item }: CartLineItemProps) {
 
   function handleQty(value: string) {
     const n = parseInt(value, 10);
-    if (!isNaN(n) && n >= item.moq) {
+    if (!isNaN(n) && n >= item.moq && n <= item.stock) {
       updateQty(item.productId, n);
     }
   }
@@ -82,12 +82,14 @@ export function CartLineItem({ item }: CartLineItemProps) {
               onChange={(e) => handleQty(e.target.value)}
               className="h-7 w-14 text-center text-sm px-1"
               min={item.moq}
+              max={item.stock}
             />
             <Button
               variant="outline"
               size="icon"
               className="h-7 w-7"
-              onClick={() => updateQty(item.productId, item.quantity + 1)}
+              onClick={() => updateQty(item.productId, Math.min(item.stock, item.quantity + 1))}
+              disabled={item.quantity >= item.stock}
               aria-label="Increase quantity"
             >
               <Plus className="h-3 w-3" />

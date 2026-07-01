@@ -14,6 +14,7 @@ export interface CartItem {
   unitPrice: number;
   currencyCode: string;
   moq: number;
+  stock: number;
   pricingTiers: PricingTierDTO[];
 }
 
