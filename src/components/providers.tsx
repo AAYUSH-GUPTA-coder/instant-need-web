@@ -8,6 +8,7 @@ import { registerAuthStore } from "@/lib/api/client";
 import { useAuthStore } from "@/lib/stores/authStore";
 import { useAuthSync } from "@/lib/hooks/useAuthSync";
 import { getApiError } from "@/lib/errors";
+import { OfflineBanner } from "@/components/OfflineBanner";
 
 function AuthStoreRegistrar() {
   useAuthSync();
@@ -81,6 +82,7 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthStoreRegistrar />
+      <OfflineBanner />
       {children}
       <Toaster richColors position="top-right" closeButton />
     </QueryClientProvider>
