@@ -57,6 +57,11 @@ const nextConfig: NextConfig = {
       protocol: "https",
       hostname: "placehold.co",
     },
+    // Images proxied through Vercel (STORAGE_BASE_URL=https://instant-need.vercel.app/uploads)
+    {
+      protocol: "https",
+      hostname: "instant-need.vercel.app",
+    },
     // Development / local mocks
     {
       protocol: "http",
@@ -75,16 +80,22 @@ const nextConfig: NextConfig = {
     },
   },
 
-  // ── API proxy (eliminates CORS + mixed-content) ───────────────────────
-  // Browser calls https://instant-need-web-one.vercel.app/api/v1/* (same origin, HTTPS).
-  // Vercel server-side forwards to EC2 — no browser CORS preflight, no mixed content.
-  // Set NEXT_PUBLIC_API_URL=/api/v1 on Vercel (relative URL).
+  // ── API + uploads proxy (eliminates CORS + mixed-content) ───────────────
+  // Browser/mobile calls https://instant-need.vercel.app/api/v1/* or /uploads/*.
+  // Vercel forwards server-side to EC2 over HTTP — no CORS preflight,
+  // no cleartext-HTTP issues on Android 9+.
+  // On EC2, set STORAGE_BASE_URL=https://instant-need.vercel.app/uploads so
+  // uploaded image URLs are stored as HTTPS Vercel paths.
   async rewrites() {
     const backendUrl = process.env.API_ORIGIN ?? "http://ec2-35-171-29-245.compute-1.amazonaws.com:8080";
     return [
       {
         source: "/api/v1/:path*",
         destination: `${backendUrl}/api/v1/:path*`,
+      },
+      {
+        source: "/uploads/:path*",
+        destination: `${backendUrl}/uploads/:path*`,
       },
     ];
   },
