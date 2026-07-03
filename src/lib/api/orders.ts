@@ -24,6 +24,11 @@ export const ordersApi = {
 
   cancelOrder: (id: string) =>
     apiClient.post<OrderDTO>(`/orders/${id}/cancel`).then((r) => r.data),
+
+  downloadInvoice: (id: string) =>
+    apiClient
+      .get<Blob>(`/orders/${id}/invoice`, { responseType: "blob" })
+      .then((r) => r.data),
 };
 
 export const adminOrdersApi = {
@@ -43,5 +48,10 @@ export const adminOrdersApi = {
   regenerateInvoice: (id: string) =>
     apiClient
       .post<{ invoiceUrl: string }>(`/admin/orders/${id}/invoice/regenerate`)
+      .then((r) => r.data),
+
+  downloadInvoice: (id: string) =>
+    apiClient
+      .get<Blob>(`/admin/orders/${id}/invoice`, { responseType: "blob" })
       .then((r) => r.data),
 };

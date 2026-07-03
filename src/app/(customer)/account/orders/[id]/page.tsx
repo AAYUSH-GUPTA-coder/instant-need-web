@@ -2,13 +2,14 @@
 
 import { use } from "react";
 import Link from "next/link";
-import { ChevronLeft, Package, MapPin, CreditCard, FileDown } from "lucide-react";
+import { ChevronLeft, Package, MapPin, CreditCard, FileDown, Loader2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { EmptyState } from "@/components/ui/empty-state";
 import { OrderStatusTimeline } from "@/components/account/OrderStatusTimeline";
 import { useOrder } from "@/lib/hooks/useOrders";
+import { useInvoiceDownload } from "@/lib/hooks/useInvoiceDownload";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 
 function orderRef(id: string) {
@@ -24,6 +25,7 @@ interface OrderDetailPageProps {
 export default function OrderDetailPage({ params }: OrderDetailPageProps) {
   const { id } = use(params);
   const { data: order, isLoading } = useOrder(id);
+  const { handleView: handleViewInvoice, isLoading: isInvoiceLoading } = useInvoiceDownload(id);
 
   if (isLoading) {
     return (
@@ -145,15 +147,19 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
               #{order.orderNumber} · PDF
             </p>
           </div>
-          <a
-            href={order.invoiceUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium hover:bg-muted transition-colors"
+          <button
+            type="button"
+            onClick={handleViewInvoice}
+            disabled={isInvoiceLoading}
+            className="inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium hover:bg-muted transition-colors disabled:opacity-50"
           >
-            <FileDown className="h-4 w-4" />
-            Download PDF
-          </a>
+            {isInvoiceLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <FileDown className="h-4 w-4" />
+            )}
+            View PDF
+          </button>
         </div>
       )}
 

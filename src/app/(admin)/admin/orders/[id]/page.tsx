@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 
 import { useAdminOrder, useUpdateOrderStatus, useRegenerateInvoice } from "@/lib/hooks/useAdmin";
+import { useInvoiceDownload } from "@/lib/hooks/useInvoiceDownload";
 import { getApiError } from "@/lib/errors";
 import { formatCurrency } from "@/lib/utils";
 import type { OrderStatus } from "@/lib/types/order";
@@ -54,6 +55,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
   const { data: order, isLoading } = useAdminOrder(id);
   const updateStatus = useUpdateOrderStatus(id);
   const regenerateInvoice = useRegenerateInvoice(id);
+  const { handleView: handleViewInvoice, isLoading: isInvoiceLoading } = useInvoiceDownload(id, true);
   const [selectedStatus, setSelectedStatus] = useState<OrderStatus | "">("");
 
   async function handleStatusUpdate() {
@@ -274,12 +276,19 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
           </CardHeader>
           <CardContent className="flex items-center gap-3">
             {order.invoiceUrl ? (
-              <a href={order.invoiceUrl} target="_blank" rel="noopener noreferrer">
-                <Button variant="outline" size="sm">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleViewInvoice}
+                disabled={isInvoiceLoading}
+              >
+                {isInvoiceLoading ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
                   <FileDown className="h-4 w-4 mr-2" />
-                  Download Invoice PDF
-                </Button>
-              </a>
+                )}
+                View Invoice PDF
+              </Button>
             ) : (
               <p className="text-sm text-muted-foreground">No invoice generated yet.</p>
             )}

@@ -3,7 +3,7 @@
 import { use } from "react";
 import Link from "next/link";
 import { format } from "date-fns";
-import { ArrowLeft, FileDown } from "lucide-react";
+import { ArrowLeft, FileDown, Loader2 } from "lucide-react";
 
 import { AdminHeader } from "@/components/layout/AdminHeader";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/table";
 
 import { useAdminCustomer, useAdminCustomerAddresses } from "@/lib/hooks/useAdmin";
+import { useInvoiceDownload } from "@/lib/hooks/useInvoiceDownload";
 import { formatCurrency } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -27,6 +28,24 @@ import { MapPin } from "lucide-react";
 
 interface CustomerDetailPageProps {
   params: Promise<{ id: string }>;
+}
+
+function InvoiceCell({ orderId, hasInvoice }: { orderId: string; hasInvoice: boolean }) {
+  const { handleView, isLoading } = useInvoiceDownload(orderId, true);
+  if (!hasInvoice) {
+    return <span className="text-xs text-muted-foreground">—</span>;
+  }
+  return (
+    <button
+      type="button"
+      onClick={handleView}
+      disabled={isLoading}
+      className="inline-flex items-center gap-1 text-xs text-primary hover:underline disabled:opacity-50"
+    >
+      {isLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <FileDown className="h-3 w-3" />}
+      View
+    </button>
+  );
 }
 
 const STATUS_BADGE: Record<string, string> = {
@@ -271,19 +290,7 @@ export default function CustomerDetailPage({ params }: CustomerDetailPageProps) 
                           : "—"}
                       </TableCell>
                       <TableCell>
-                        {order.invoiceUrl ? (
-                          <a
-                            href={order.invoiceUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
-                          >
-                            <FileDown className="h-3 w-3" />
-                            Download
-                          </a>
-                        ) : (
-                          <span className="text-xs text-muted-foreground">—</span>
-                        )}
+                        <InvoiceCell orderId={order.id} hasInvoice={!!order.invoiceUrl} />
                       </TableCell>
                       <TableCell>
                         <Link
