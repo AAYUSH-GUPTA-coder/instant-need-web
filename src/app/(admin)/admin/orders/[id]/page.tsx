@@ -228,46 +228,44 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
         </Card>
 
         {/* Status Update */}
-        {order.status !== "DELIVERED" && order.status !== "CANCELLED" && (
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Update Status</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-3">
-                <Select
-                  value={selectedStatus || order.status}
-                  onValueChange={(v) => setSelectedStatus(v as OrderStatus)}
-                >
-                  <SelectTrigger className="w-48">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {STATUS_OPTIONS.filter((s) => s !== "PENDING").map((s) => (
-                      <SelectItem key={s} value={s}>
-                        {s}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Button
-                  size="sm"
-                  disabled={
-                    !selectedStatus ||
-                    selectedStatus === order.status ||
-                    updateStatus.isPending
-                  }
-                  onClick={handleStatusUpdate}
-                >
-                  {updateStatus.isPending && (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  )}
-                  Update
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm">Update Status</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-3">
+              <Select
+                value={selectedStatus || order.status}
+                onValueChange={(v) => setSelectedStatus(v as OrderStatus)}
+              >
+                <SelectTrigger className="w-48">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {STATUS_OPTIONS.filter((s) => s !== "PENDING").map((s) => (
+                    <SelectItem key={s} value={s}>
+                      {s}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button
+                size="sm"
+                disabled={
+                  !selectedStatus ||
+                  selectedStatus === order.status ||
+                  updateStatus.isPending
+                }
+                onClick={handleStatusUpdate}
+              >
+                {updateStatus.isPending && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                Update
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Invoice */}
         <Card>
