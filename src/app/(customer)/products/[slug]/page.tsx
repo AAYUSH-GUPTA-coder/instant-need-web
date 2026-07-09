@@ -168,6 +168,11 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
           <div className="space-y-2">
             <div className="flex items-center gap-2 flex-wrap">
               <Badge variant="secondary">{product.categoryName}</Badge>
+              {product.stock > 0 && product.mrp && product.mrp > product.basePrice && (
+                <Badge className="bg-red-600 text-white [a]:hover:bg-red-600">
+                  {Math.round((1 - product.basePrice / product.mrp) * 100)}% OFF
+                </Badge>
+              )}
               {product.stock === 0 ? (
                 <Badge variant="destructive">Out of stock</Badge>
               ) : product.stock <= 20 ? (
