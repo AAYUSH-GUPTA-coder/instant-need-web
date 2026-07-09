@@ -94,17 +94,17 @@ function CustomersContent() {
                   <TableRow key={c.id}>
                     <TableCell className="font-medium text-sm">{c.fullName}</TableCell>
                     <TableCell className="text-sm text-muted-foreground">
-                      {c.businessName ?? "—"}
+                      {c.businessName ?? "-"}
                     </TableCell>
                     <TableCell className="text-sm">{c.email}</TableCell>
                     <TableCell className="text-sm text-muted-foreground">
-                      {c.phoneNumber ?? "—"}
+                      {c.phoneNumber ?? "-"}
                     </TableCell>
                     <TableCell className="text-right text-sm">{c.orderCount ?? 0}</TableCell>
                     <TableCell className="text-sm text-muted-foreground">
                       {c.createdAt
                         ? format(new Date(c.createdAt), "dd MMM yyyy")
-                        : "—"}
+                        : "-"}
                     </TableCell>
                     <TableCell>
                       <Badge
@@ -133,7 +133,7 @@ function CustomersContent() {
         {data && totalPgs > 1 && (
           <div className="flex items-center justify-between text-sm text-muted-foreground">
             <p>
-              Page {data.page} of {totalPgs} — {data.total} customers
+              Page {data.page} of {totalPgs} · {data.total} customers
             </p>
             <div className="flex gap-2">
               <Button

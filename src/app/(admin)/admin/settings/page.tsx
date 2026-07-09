@@ -23,7 +23,7 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground">Email</p>
-                <p className="text-sm font-medium">{user?.email ?? "—"}</p>
+                <p className="text-sm font-medium">{user?.email ?? "-"}</p>
               </div>
               <Badge variant="secondary" className="text-xs">
                 {user?.role ?? "ADMIN"}
@@ -32,7 +32,7 @@ export default function SettingsPage() {
             <Separator />
             <div>
               <p className="text-xs text-muted-foreground">User ID</p>
-              <p className="text-sm font-mono text-muted-foreground">{user?.id ?? "—"}</p>
+              <p className="text-sm font-mono text-muted-foreground">{user?.id ?? "-"}</p>
             </div>
           </CardContent>
         </Card>

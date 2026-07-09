@@ -42,7 +42,7 @@ export default function DownloadAppPage() {
               Download the InstantNeed app
             </h1>
             <p className="text-muted-foreground text-base leading-relaxed">
-              For the best experience, order on the go with the InstantNeed app —
+              For the best experience, order on the go with the InstantNeed app,
               built for busy businesses and shop-owners.
             </p>
           </div>

@@ -128,7 +128,7 @@ function PricingSheet({ product, onClose }: PricingSheetProps) {
             Pricing Tiers
             {product && (
               <span className="text-muted-foreground font-normal ml-2">
-                — {product.name}
+                · {product.name}
               </span>
             )}
           </SheetTitle>
@@ -176,7 +176,7 @@ function PricingSheet({ product, onClose }: PricingSheetProps) {
                 {fields.length === 0 ? (
                   <div className="rounded-lg border border-dashed p-8 text-center text-muted-foreground text-sm">
                     <CircleDollarSign className="h-8 w-8 mx-auto mb-2 opacity-40" />
-                    No tiers — customers pay the base price of{" "}
+                    No tiers, customers pay the base price of{" "}
                     {product && formatCurrency(product.basePrice, product.currencyCode)}.
                     <br />
                     Add a tier to enable volume discounts.

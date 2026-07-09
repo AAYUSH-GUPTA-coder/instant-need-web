@@ -14,18 +14,18 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
   ),
   title: {
-    default: "InstantNeed — B2B Wholesale Platform",
-    template: "%s — InstantNeed",
+    default: "InstantNeed | B2B Wholesale Platform",
+    template: "%s | InstantNeed",
   },
   description:
-    "Browse thousands of B2B products, unlock volume discounts, and manage your business orders — all in one place.",
+    "Browse thousands of B2B products, unlock volume discounts, and manage your business orders, all in one place.",
   keywords: ["B2B", "wholesale", "bulk ordering", "business", "trade"],
   openGraph: {
     type: "website",
     siteName: "InstantNeed",
-    title: "InstantNeed — B2B Wholesale Platform",
+    title: "InstantNeed | B2B Wholesale Platform",
     description:
-      "Browse thousands of B2B products, unlock volume discounts, and manage your business orders — all in one place.",
+      "Browse thousands of B2B products, unlock volume discounts, and manage your business orders, all in one place.",
   },
   twitter: {
     card: "summary_large_image",

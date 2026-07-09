@@ -127,7 +127,7 @@ function OrdersContent() {
                       {order.orderNumber}
                     </TableCell>
                     <TableCell className="text-sm">
-                      <p className="font-medium">{order.customerName || "—"}</p>
+                      <p className="font-medium">{order.customerName || "-"}</p>
                     </TableCell>
                     <TableCell>
                       <Badge
@@ -165,7 +165,7 @@ function OrdersContent() {
         {data && totalPgs > 1 && (
           <div className="flex items-center justify-between text-sm text-muted-foreground">
             <p>
-              Page {data.page} of {totalPgs} — {data.total} orders
+              Page {data.page} of {totalPgs} · {data.total} orders
             </p>
             <div className="flex gap-2">
               <Button

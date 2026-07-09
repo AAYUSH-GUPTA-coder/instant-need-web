@@ -33,7 +33,7 @@ interface CustomerDetailPageProps {
 function InvoiceCell({ orderId, hasInvoice }: { orderId: string; hasInvoice: boolean }) {
   const { handleView, isLoading } = useInvoiceDownload(orderId, true);
   if (!hasInvoice) {
-    return <span className="text-xs text-muted-foreground">—</span>;
+    return <span className="text-xs text-muted-foreground">-</span>;
   }
   return (
     <button
@@ -119,26 +119,26 @@ export default function CustomerDetailPage({ params }: CustomerDetailPageProps) 
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm">
               <div>
                 <p className="text-xs text-muted-foreground">Full Name</p>
-                <p className="font-medium">{customer.fullName ?? "—"}</p>
+                <p className="font-medium">{customer.fullName ?? "-"}</p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Business</p>
-                <p className="font-medium">{customer.businessName ?? "—"}</p>
+                <p className="font-medium">{customer.businessName ?? "-"}</p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Email</p>
-                <p className="font-medium">{customer.email ?? "—"}</p>
+                <p className="font-medium">{customer.email ?? "-"}</p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Phone</p>
-                <p className="font-medium">{customer.phoneNumber ?? "—"}</p>
+                <p className="font-medium">{customer.phoneNumber ?? "-"}</p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Joined</p>
                 <p className="font-medium">
                   {customer.createdAt
                     ? format(new Date(customer.createdAt), "dd MMM yyyy")
-                    : "—"}
+                    : "-"}
                 </p>
               </div>
               <div>
@@ -186,7 +186,7 @@ export default function CustomerDetailPage({ params }: CustomerDetailPageProps) 
                         (customer.totalRevenue ?? 0) / customer.orderCount,
                         "INR"
                       )
-                    : "—"}
+                    : "-"}
                 </p>
               </CardContent>
             </Card>
@@ -287,7 +287,7 @@ export default function CustomerDetailPage({ params }: CustomerDetailPageProps) 
                       <TableCell className="text-sm text-muted-foreground">
                         {order.placedAt
                           ? format(new Date(order.placedAt), "dd MMM yyyy")
-                          : "—"}
+                          : "-"}
                       </TableCell>
                       <TableCell>
                         <InvoiceCell orderId={order.id} hasInvoice={!!order.invoiceUrl} />

@@ -142,7 +142,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
               <CardTitle className="text-sm">Customer</CardTitle>
             </CardHeader>
             <CardContent className="text-sm space-y-1">
-              <p className="font-medium">{order.customerName ?? "—"}</p>
+              <p className="font-medium">{order.customerName ?? "-"}</p>
               {order.customerBusinessName && (
                 <p className="text-muted-foreground">{order.customerBusinessName}</p>
               )}

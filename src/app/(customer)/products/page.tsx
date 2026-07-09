@@ -3,7 +3,7 @@ import { ProductCardSkeleton } from "@/components/catalog/ProductCard";
 import { ProductsContent } from "./ProductsContent";
 
 export const metadata = {
-  title: "Products — InstantNeed",
+  title: "Products | InstantNeed",
   description: "Browse our wholesale product catalog",
 };
 

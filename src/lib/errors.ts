@@ -36,7 +36,7 @@ export function getApiError(
     if (status === 401) return "You must be logged in to do that.";
     if (status === 403) return "You don't have permission to do that.";
     if (status === 404) return "The requested resource was not found.";
-    if (status === 409) return "A conflict occurred — the resource may already exist.";
+    if (status === 409) return "A conflict occurred, the resource may already exist.";
     if (status === 422) return "The submitted data is invalid.";
     if (status === 429) return "Too many requests. Please wait a moment and try again.";
     if (status && status >= 500) return "Server error. Please try again later.";

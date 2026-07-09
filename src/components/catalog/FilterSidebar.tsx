@@ -149,7 +149,7 @@ export function FilterSidebar({ fixedCategoryId }: FilterSidebarProps = {}) {
               }, 500);
             }}
           />
-          <span className="text-muted-foreground text-sm shrink-0">—</span>
+          <span className="text-muted-foreground text-sm shrink-0">-</span>
           <Input
             type="number"
             placeholder="Max"

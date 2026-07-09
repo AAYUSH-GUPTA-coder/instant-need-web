@@ -286,7 +286,7 @@ export default function ReportsPage() {
                       </TableCell>
                       <TableCell className="font-medium text-sm">{c.fullName}</TableCell>
                       <TableCell className="text-sm text-muted-foreground">
-                        {c.businessName ?? "—"}
+                        {c.businessName ?? "-"}
                       </TableCell>
                       <TableCell className="text-right text-sm">{c.orderCount}</TableCell>
                       <TableCell className="text-right text-sm font-medium">
@@ -295,7 +295,7 @@ export default function ReportsPage() {
                       <TableCell className="text-sm text-muted-foreground">
                         {c.lastOrderAt
                           ? format(new Date(c.lastOrderAt), "dd MMM yyyy")
-                          : "—"}
+                          : "-"}
                       </TableCell>
                     </TableRow>
                   ))}

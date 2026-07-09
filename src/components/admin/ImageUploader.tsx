@@ -30,7 +30,7 @@ export function ImageUploader({ productId, images }: ImageUploaderProps) {
 
     // Client-side guard
     if (file.size > MAX_MB * 1024 * 1024) {
-      toast.error(`File too large — maximum is ${MAX_MB} MB`);
+      toast.error(`File too large, maximum is ${MAX_MB} MB`);
       return;
     }
     if (!file.type.startsWith("image/")) {
@@ -136,7 +136,7 @@ export function ImageUploader({ productId, images }: ImageUploaderProps) {
                   {images.length === 0 ? "Add product images" : "Upload another image"}
                 </p>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  Drag &amp; drop or click — JPEG, PNG, WebP, GIF · Max {MAX_MB} MB
+                  Drag &amp; drop or click, JPEG, PNG, WebP, GIF · Max {MAX_MB} MB
                 </p>
               </div>
             </>

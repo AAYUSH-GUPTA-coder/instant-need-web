@@ -26,7 +26,7 @@ export default function TermsOfServicePage() {
           <h2>1. Who Can Use InstantNeed</h2>
           <p>
             InstantNeed is a B2B wholesale ordering platform intended for businesses, shop-owners, and
-            other commercial buyers purchasing goods for resale or business use — not for individual
+            other commercial buyers purchasing goods for resale or business use, not for individual
             personal/household consumption. You must provide accurate registration information,
             including a valid business name and GST/VAT number where applicable, and you are responsible
             for maintaining the confidentiality of your account credentials.

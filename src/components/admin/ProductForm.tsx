@@ -144,7 +144,7 @@ export function ProductForm({ product }: ProductFormProps) {
               pendingFile.name.replace(/\.[^.]+$/, ""),
             );
           } catch {
-            toast.warning("Product created but image upload failed — you can upload it from the edit page.");
+            toast.warning("Product created but image upload failed, you can upload it from the edit page.");
             router.push(`/admin/products/${created.id}/edit`);
             return;
           }

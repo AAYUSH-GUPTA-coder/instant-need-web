@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "InstantNeed — B2B Wholesale",
+    name: "InstantNeed | B2B Wholesale",
     short_name: "InstantNeed",
     description: "B2B wholesale ordering platform",
     start_url: "/home",

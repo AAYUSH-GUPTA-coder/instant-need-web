@@ -28,7 +28,7 @@ export default function PrivacyPolicyPage() {
           <ul>
             <li>
               <strong>Account data</strong>: name, business name, GST/VAT number, email address, phone
-              number, password (stored as an irreversible cryptographic hash — we never store or have
+              number, password (stored as an irreversible cryptographic hash; we never store or have
               access to your plain-text password).
             </li>
             <li><strong>Delivery data</strong>: shipping addresses you save to your account.</li>
@@ -46,7 +46,7 @@ export default function PrivacyPolicyPage() {
             </li>
           </ul>
           <p>
-            We do <strong>not</strong> collect payment card, UPI, or bank account details — InstantNeed
+            We do <strong>not</strong> collect payment card, UPI, or bank account details; InstantNeed
             currently operates on a Cash on Delivery (COD) basis only, and we do not process online
             payments.
           </p>

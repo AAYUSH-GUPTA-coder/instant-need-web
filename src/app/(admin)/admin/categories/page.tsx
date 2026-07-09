@@ -230,7 +230,7 @@ function CategoryDialog({ open, onClose, editing }: CategoryDialogProps) {
               >
                 <Upload className="h-6 w-6" />
                 <span className="text-sm">Click to upload image</span>
-                <span className="text-xs">JPEG, PNG, WebP — max 5 MB</span>
+                <span className="text-xs">JPEG, PNG, WebP, max 5 MB</span>
               </button>
             )}
             <input
@@ -382,7 +382,7 @@ export default function CategoriesPage() {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground max-w-xs truncate">
-                      {cat.description ?? "—"}
+                      {cat.description ?? "-"}
                     </TableCell>
                     <TableCell className="text-right text-sm">
                       {cat.productCount ?? 0}
