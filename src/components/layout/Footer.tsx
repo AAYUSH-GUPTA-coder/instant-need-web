@@ -2,17 +2,16 @@ import Link from "next/link";
 import { Package2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { InstantNeedIcon, InstantNeedWordmark } from "@/components/ui/brand";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 const FOOTER_LINKS = {
   Company: [
-    { label: "About", href: "#" },
-    { label: "Contact", href: "#" },
-    { label: "Careers", href: "#" },
+    { label: "Contact Us", href: "/contact-us" },
   ],
   Support: [
-    { label: "Help Centre", href: "#" },
-    { label: "Terms of Service", href: "#" },
-    { label: "Privacy Policy", href: "#" },
+    { label: "Terms of Service", href: "/terms" },
+    { label: "Privacy Policy", href: "/privacy-policy" },
   ],
   Catalog: [
     { label: "All Products", href: "/products" },
@@ -52,6 +51,11 @@ export function Footer() {
                   </li>
                 ))}
               </ul>
+              {section === "Catalog" && (
+                <Link href="/download" className={cn(buttonVariants({ size: "sm" }), "mt-4")}>
+                  Download App
+                </Link>
+              )}
             </div>
           ))}
         </div>
