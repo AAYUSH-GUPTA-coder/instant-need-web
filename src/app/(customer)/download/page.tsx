@@ -44,7 +44,7 @@ export default function DownloadAppPage() {
             <p className="text-muted-foreground text-base leading-relaxed">
               We&apos;re putting the finishing touches on the InstantNeed app for
               Android and iOS, built for busy businesses and shop-owners. Order on
-              the web for now — we&apos;ll let you know the moment the app is live.
+              the web for now, and we&apos;ll let you know the moment it&apos;s live.
             </p>
           </div>
 
