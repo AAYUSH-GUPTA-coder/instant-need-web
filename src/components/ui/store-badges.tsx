@@ -14,32 +14,56 @@ function GooglePlayMark({ className }: { className?: string }) {
   );
 }
 
-export function AppStoreBadge({ href }: { href: string }) {
-  return (
-    <a
-      href={href}
-      className="inline-flex items-center gap-2.5 rounded-lg bg-foreground text-background px-4 py-2 hover:bg-foreground/90 transition-colors"
-    >
+export function AppStoreBadge({ href, disabled }: { href: string; disabled?: boolean }) {
+  const classes = disabled
+    ? "inline-flex items-center gap-2.5 rounded-lg bg-foreground/40 text-background px-4 py-2 cursor-not-allowed"
+    : "inline-flex items-center gap-2.5 rounded-lg bg-foreground text-background px-4 py-2 hover:bg-foreground/90 transition-colors";
+  const content = (
+    <>
       <AppleMark className="h-6 w-6 shrink-0" />
       <span className="text-left leading-tight">
         <span className="block text-[10px] opacity-80">Download on the</span>
         <span className="block text-base font-semibold -mt-0.5">App Store</span>
       </span>
+    </>
+  );
+  if (disabled) {
+    return (
+      <span className={classes} aria-disabled="true">
+        {content}
+      </span>
+    );
+  }
+  return (
+    <a href={href} className={classes}>
+      {content}
     </a>
   );
 }
 
-export function GooglePlayBadge({ href }: { href: string }) {
-  return (
-    <a
-      href={href}
-      className="inline-flex items-center gap-2.5 rounded-lg bg-foreground text-background px-4 py-2 hover:bg-foreground/90 transition-colors"
-    >
+export function GooglePlayBadge({ href, disabled }: { href: string; disabled?: boolean }) {
+  const classes = disabled
+    ? "inline-flex items-center gap-2.5 rounded-lg bg-foreground/40 text-background px-4 py-2 cursor-not-allowed"
+    : "inline-flex items-center gap-2.5 rounded-lg bg-foreground text-background px-4 py-2 hover:bg-foreground/90 transition-colors";
+  const content = (
+    <>
       <GooglePlayMark className="h-6 w-6 shrink-0" />
       <span className="text-left leading-tight">
         <span className="block text-[10px] opacity-80">GET IT ON</span>
         <span className="block text-base font-semibold -mt-0.5">Google Play</span>
       </span>
+    </>
+  );
+  if (disabled) {
+    return (
+      <span className={classes} aria-disabled="true">
+        {content}
+      </span>
+    );
+  }
+  return (
+    <a href={href} className={classes}>
+      {content}
     </a>
   );
 }

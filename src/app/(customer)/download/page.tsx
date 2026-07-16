@@ -5,8 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { AppStoreBadge, GooglePlayBadge } from "@/components/ui/store-badges";
 
 export const metadata: Metadata = {
-  title: "Download the App",
-  description: "Get the InstantNeed app for Android and iOS and order on the go.",
+  title: "App Coming Soon",
+  description: "The InstantNeed app for Android and iOS is coming soon.",
 };
 
 const HIGHLIGHTS = [
@@ -34,16 +34,17 @@ export default function DownloadAppPage() {
         {/* Copy */}
         <div className="space-y-6">
           <Badge variant="secondary" className="text-xs font-medium tracking-wide uppercase">
-            Available on Android & iOS
+            Coming soon
           </Badge>
 
           <div className="space-y-3">
             <h1 className="text-3xl md:text-4xl font-bold leading-tight tracking-tight">
-              Download the InstantNeed app
+              The InstantNeed app is on its way
             </h1>
             <p className="text-muted-foreground text-base leading-relaxed">
-              For the best experience, order on the go with the InstantNeed app,
-              built for busy businesses and shop-owners.
+              We&apos;re putting the finishing touches on the InstantNeed app for
+              Android and iOS, built for busy businesses and shop-owners. Order on
+              the web for now — we&apos;ll let you know the moment the app is live.
             </p>
           </div>
 
@@ -62,9 +63,12 @@ export default function DownloadAppPage() {
           </ul>
 
           <div className="flex flex-wrap gap-3 pt-2">
-            <AppStoreBadge href="#" />
-            <GooglePlayBadge href="#" />
+            <AppStoreBadge href="#" disabled />
+            <GooglePlayBadge href="#" disabled />
           </div>
+          <p className="text-xs text-muted-foreground">
+            Store links will go live at launch.
+          </p>
         </div>
 
         {/* Visual */}
