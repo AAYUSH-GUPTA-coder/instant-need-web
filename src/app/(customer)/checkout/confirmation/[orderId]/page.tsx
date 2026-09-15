@@ -12,6 +12,7 @@ import { formatCurrency, formatDateTime, cn } from "@/lib/utils";
 import type { OrderDTO } from "@/lib/types/order";
 
 const BORDER = "#333333";
+const BORDER_WIDTH = "1.25px";
 const LIGHT = "#f2f2f2";
 
 function orderRef(id: string) {
@@ -82,7 +83,7 @@ function InvoicePrint({ order }: { order: OrderDTO }) {
 
   return (
     <div className="hidden print:block" style={{ fontFamily: "Arial, sans-serif", fontSize: "10px", color: "#111" }}>
-      <div style={{ border: `1px solid ${BORDER}`, padding: 16 }}>
+      <div style={{ border: `${BORDER_WIDTH} solid ${BORDER}`, padding: 16 }}>
       <table style={{ ...table, borderCollapse: "collapse" }}><tbody><tr><td style={{ ...noBorder, width: "65%", verticalAlign: "top" }}><div style={{ fontSize: 25, fontWeight: 800 }}>INSTANTNEED</div><div style={{ fontSize: 14 }}>B2B Wholesale</div><div>Shop No. 5959, 12 Cross Road, Ambala-133001, Haryana</div><div style={{ fontWeight: 700, fontSize: 13, marginTop: 5 }}>GSTIN / UIN : 06AAMFI3712M1Z6</div></td><td style={{ ...noBorder, textAlign: "right", verticalAlign: "top" }}><div style={{ fontSize: 22, fontWeight: 800 }}>TAX INVOICE</div><div style={{ fontSize: 13, marginTop: 8 }}>Original Copy</div></td></tr></tbody></table>
       <table style={{ ...table, marginTop: 10, borderCollapse: "collapse" }}><tbody><tr><td style={{ ...cellStyle, width: "50%", verticalAlign: "top" }}><div><b>Invoice No. :</b> {order.invoiceNumber || order.orderNumber}</div><div><b>Dated :</b> {new Date(order.placedAt).toLocaleDateString("en-IN")}</div><div><b>Place of Supply :</b> Haryana (06)</div><div><b>Reverse Charge :</b> N</div></td><td style={{ ...cellStyle, width: "50%", verticalAlign: "top" }}><div><b>Transport :</b> {order.transport || "—"}</div><div><b>Vehicle No. :</b> {order.vehicleNumber || "—"}</div><div><b>E-Way Bill No. :</b> {order.ewayBillNumber || "—"}</div></td></tr></tbody></table>
       <table style={{ ...table, marginTop: 10, borderCollapse: "collapse" }}><tbody><tr><td style={{ ...cellStyle, width: "50%", verticalAlign: "top" }}><b>Billed To:</b><div>{customerName}</div><div>{addr.addressLine1}{addr.addressLine2 ? `, ${addr.addressLine2}` : ""}<br />{addr.city}, {addr.state} {addr.postalCode}</div><b>GSTIN/UIN : {customerGstin}</b></td><td style={{ ...cellStyle, width: "50%", verticalAlign: "top" }}><b>Shipped To:</b><div>{customerName}</div><div>{addr.addressLine1}{addr.addressLine2 ? `, ${addr.addressLine2}` : ""}<br />{addr.city}, {addr.state} {addr.postalCode}</div><b>GSTIN/UIN : {customerGstin}</b></td></tr></tbody></table>
@@ -97,7 +98,7 @@ function InvoicePrint({ order }: { order: OrderDTO }) {
 
 const table: React.CSSProperties = { width: "100%" };
 const noBorder: React.CSSProperties = { border: 0, padding: 6 };
-const cellStyle: React.CSSProperties = { border: `1px solid ${BORDER}`, padding: "6px 5px" };
+const cellStyle: React.CSSProperties = { border: `${BORDER_WIDTH} solid ${BORDER}`, padding: "6px 5px" };
 function cell(textAlign: "left" | "right" | "center"): React.CSSProperties { return { ...cellStyle, textAlign }; }
 
 interface ConfirmationPageProps { params: Promise<{ orderId: string }> }
