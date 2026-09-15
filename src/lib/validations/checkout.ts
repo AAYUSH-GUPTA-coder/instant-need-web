@@ -24,6 +24,12 @@ export const checkoutSchema = z
       error: "Please select a payment method",
     }),
     notes: z.string().max(500).optional(),
+    gstinUin: z
+      .string()
+      .trim()
+      .regex(/^[0-9A-Za-z]{15}$/, "Enter a valid 15-character GSTIN/UIN")
+      .optional()
+      .or(z.literal("")),
   })
   .merge(shippingAddressSchema.partial())
   .superRefine((data, ctx) => {

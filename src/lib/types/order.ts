@@ -21,9 +21,17 @@ export interface OrderItemDTO {
   productId: string;
   productName: string;
   sku: string;
+  unitOfMeasurement?: string;
   quantity: number;
   unitPrice: number;
   lineTotal: number;
+  mrp?: number;
+  hsnCode?: string;
+  cgstRate?: number;
+  sgstRate?: number;
+  taxableAmount?: number;
+  cgstAmount?: number;
+  sgstAmount?: number;
   currencyCode: string;
   imageUrl?: string;
 }
@@ -45,6 +53,11 @@ export interface OrderDTO {
   items: OrderItemDTO[];
   customerName?: string;
   customerBusinessName?: string;
+  customerGstinUin?: string;
+  invoiceNumber?: string;
+  ewayBillNumber?: string;
+  transport?: string;
+  vehicleNumber?: string;
   invoiceUrl?: string;
 }
 
@@ -81,6 +94,7 @@ export interface PlaceOrderRequest {
   shippingAddress?: InlineShippingAddress; // or provide inline
   paymentMethod: string;
   notes?: string;
+  gstinUin?: string;
 }
 
 export interface PlaceOrderResponse {
@@ -92,4 +106,7 @@ export interface PlaceOrderResponse {
 
 export interface UpdateOrderStatusRequest {
   status: OrderStatus;
+  ewayBillNumber?: string;
+  transport?: string;
+  vehicleNumber?: string;
 }

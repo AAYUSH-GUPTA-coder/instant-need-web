@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { ArrowLeft, Loader2, FileDown } from "lucide-react";
@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -57,12 +59,34 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
   const regenerateInvoice = useRegenerateInvoice(id);
   const { handleView: handleViewInvoice, isLoading: isInvoiceLoading } = useInvoiceDownload(id, true);
   const [selectedStatus, setSelectedStatus] = useState<OrderStatus | "">("");
+  const [ewayBillNumber, setEwayBillNumber] = useState("");
+  const [transport, setTransport] = useState("");
+  const [vehicleNumber, setVehicleNumber] = useState("");
+
+  useEffect(() => {
+    if (!order) return;
+    setEwayBillNumber(order.ewayBillNumber ?? "");
+    setTransport(order.transport ?? "");
+    setVehicleNumber(order.vehicleNumber ?? "");
+  }, [order]);
 
   async function handleStatusUpdate() {
-    if (!selectedStatus || selectedStatus === order?.status) return;
+    if (!order) return;
+    const dispatchChanged =
+      ewayBillNumber.trim() !== (order.ewayBillNumber ?? "")
+      || transport.trim() !== (order.transport ?? "")
+      || vehicleNumber.trim() !== (order.vehicleNumber ?? "");
+    if (!dispatchChanged && (!selectedStatus || selectedStatus === order.status)) return;
     try {
-      await updateStatus.mutateAsync({ status: selectedStatus });
-      toast.success(`Order status updated to ${selectedStatus}`);
+      await updateStatus.mutateAsync({
+        status: selectedStatus || order.status,
+        ...(dispatchChanged ? {
+          ewayBillNumber: ewayBillNumber.trim(),
+          transport: transport.trim(),
+          vehicleNumber: vehicleNumber.trim(),
+        } : {}),
+      });
+      toast.success(`Order updated to ${selectedStatus}`);
       setSelectedStatus("");
     } catch (err) {
       toast.error(getApiError(err, "Failed to update status"));
@@ -94,6 +118,10 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
   }
 
   const currentStatus = (selectedStatus || order.status) as OrderStatus;
+  const dispatchChanged =
+    ewayBillNumber.trim() !== (order.ewayBillNumber ?? "")
+    || transport.trim() !== (order.transport ?? "")
+    || vehicleNumber.trim() !== (order.vehicleNumber ?? "");
 
   return (
     <>
@@ -233,7 +261,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
             <CardTitle className="text-sm">Update Status</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-3">
+            <div className="grid gap-4 md:grid-cols-[12rem_1fr_auto] md:items-end">
               <Select
                 value={selectedStatus || order.status}
                 onValueChange={(v) => setSelectedStatus(v as OrderStatus)}
@@ -249,11 +277,24 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
                   ))}
                 </SelectContent>
               </Select>
+              <div className="grid gap-3 sm:grid-cols-3 md:col-span-2">
+                <div className="space-y-1.5">
+                  <Label htmlFor="transport" className="text-xs">Transport</Label>
+                  <Input id="transport" value={transport} onChange={(e) => setTransport(e.target.value)} placeholder="—" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="vehicleNumber" className="text-xs">Vehicle No.</Label>
+                  <Input id="vehicleNumber" value={vehicleNumber} onChange={(e) => setVehicleNumber(e.target.value)} placeholder="—" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="ewayBillNumber" className="text-xs">E-way Bill No.</Label>
+                  <Input id="ewayBillNumber" value={ewayBillNumber} onChange={(e) => setEwayBillNumber(e.target.value)} placeholder="—" />
+                </div>
+              </div>
               <Button
                 size="sm"
                 disabled={
-                  !selectedStatus ||
-                  selectedStatus === order.status ||
+                  (!selectedStatus || selectedStatus === order.status) && !dispatchChanged ||
                   updateStatus.isPending
                 }
                 onClick={handleStatusUpdate}

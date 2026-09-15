@@ -71,6 +71,9 @@ export function ProductForm({ product }: ProductFormProps) {
       description: "",
       categoryId: "",
       mrp: undefined,
+      hsnCode: "",
+      cgstRate: "",
+      sgstRate: "",
       basePrice: 0,
       currencyCode: "INR",
       stock: 0,
@@ -98,6 +101,9 @@ export function ProductForm({ product }: ProductFormProps) {
         description: product.description ?? "",
         categoryId: product.categoryId,
         mrp: product.mrp ?? undefined,
+        hsnCode: product.hsnCode ?? "",
+        cgstRate: product.cgstRate ?? "",
+        sgstRate: product.sgstRate ?? "",
         basePrice: product.basePrice,
         currencyCode: product.currencyCode,
         stock: product.stock,
@@ -127,6 +133,9 @@ export function ProductForm({ product }: ProductFormProps) {
     const payload = {
       ...data,
       mrp: data.mrp === "" || data.mrp === undefined ? undefined : data.mrp,
+      hsnCode: data.hsnCode === "" || data.hsnCode === undefined ? undefined : data.hsnCode.trim(),
+      cgstRate: data.cgstRate === "" || data.cgstRate === undefined ? undefined : data.cgstRate,
+      sgstRate: data.sgstRate === "" || data.sgstRate === undefined ? undefined : data.sgstRate,
       pricingTiers: tiers,
     };
 
@@ -182,6 +191,24 @@ export function ProductForm({ product }: ProductFormProps) {
                 {errors.sku && (
                   <p className="text-xs text-destructive">{errors.sku.message}</p>
                 )}
+              </div>
+            </div>
+
+            <div className="grid sm:grid-cols-3 gap-4">
+              <div className="space-y-1">
+                <Label htmlFor="hsnCode">HSN code</Label>
+                <Input id="hsnCode" {...register("hsnCode")} placeholder="e.g. 33061020" />
+                {errors.hsnCode && <p className="text-xs text-destructive">{errors.hsnCode.message}</p>}
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="cgstRate">CGST (%)</Label>
+                <Input id="cgstRate" type="number" step="0.01" min="0" {...register("cgstRate")} placeholder="2.5" />
+                {errors.cgstRate && <p className="text-xs text-destructive">{errors.cgstRate.message}</p>}
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="sgstRate">SGST (%)</Label>
+                <Input id="sgstRate" type="number" step="0.01" min="0" {...register("sgstRate")} placeholder="2.5" />
+                {errors.sgstRate && <p className="text-xs text-destructive">{errors.sgstRate.message}</p>}
               </div>
             </div>
 

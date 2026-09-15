@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { FormError } from "@/components/forms/FormError";
 import { ShippingAddressForm } from "@/components/checkout/ShippingAddressForm";
@@ -120,6 +121,7 @@ export default function CheckoutPage() {
         items: orderItems,
         paymentMethod: data.paymentMethod,
         notes: data.notes,
+        gstinUin: data.gstinUin?.trim() || undefined,
         ...(data.addressMode === "saved"
           ? { shippingAddressId: data.savedAddressId }
           : {
@@ -174,6 +176,29 @@ export default function CheckoutPage() {
                 <SavedAddressPicker form={form} onAddNew={switchToNew} />
               ) : (
                 <ShippingAddressForm form={form} />
+              )}
+            </section>
+
+            <Separator />
+
+            {/* ── GST details ──────────────────────────────────── */}
+            <section className="space-y-2">
+              <Label htmlFor="gstinUin" className="font-semibold text-base">
+                GSTIN/UIN <span className="font-normal text-muted-foreground text-sm">(optional)</span>
+              </Label>
+              <Input
+                id="gstinUin"
+                placeholder="15-character GSTIN/UIN"
+                maxLength={15}
+                className="uppercase"
+                {...form.register("gstinUin", {
+                  onChange: (event) => {
+                    event.target.value = event.target.value.toUpperCase();
+                  },
+                })}
+              />
+              {form.formState.errors.gstinUin && (
+                <p className="text-xs text-destructive">{form.formState.errors.gstinUin.message}</p>
               )}
             </section>
 

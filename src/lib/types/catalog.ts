@@ -34,6 +34,9 @@ export interface ProductDTO {
   categorySlug?: string;
   mrp?: number;
   basePrice: number;
+  hsnCode?: string;
+  cgstRate?: number;
+  sgstRate?: number;
   currencyCode: string;
   stock: number;
   moq: number;
@@ -52,6 +55,9 @@ export interface ProductListItem {
   categoryName: string;
   mrp?: number;
   basePrice: number;
+  hsnCode?: string;
+  cgstRate?: number;
+  sgstRate?: number;
   currencyCode: string;
   stock: number;
   moq: number;
@@ -85,6 +91,9 @@ export interface CreateProductRequest {
   description?: string;
   categoryId: string;
   basePrice: number;
+  hsnCode?: string;
+  cgstRate?: number;
+  sgstRate?: number;
   currencyCode: string;
   stock: number;
   moq: number;
