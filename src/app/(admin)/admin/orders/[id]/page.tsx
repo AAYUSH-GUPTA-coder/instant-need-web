@@ -57,7 +57,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
   const { data: order, isLoading } = useAdminOrder(id);
   const updateStatus = useUpdateOrderStatus(id);
   const regenerateInvoice = useRegenerateInvoice(id);
-  const { handleView: handleViewInvoice, isLoading: isInvoiceLoading } = useInvoiceDownload(id, true);
+  const { handleDownload: handleDownloadInvoice, isLoading: isInvoiceLoading } = useInvoiceDownload(id, true, order?.invoiceNumber, order?.orderNumber);
   const [selectedStatus, setSelectedStatus] = useState<OrderStatus | "">("");
   const [ewayBillNumber, setEwayBillNumber] = useState("");
   const [transport, setTransport] = useState("");
@@ -318,7 +318,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={handleViewInvoice}
+                onClick={handleDownloadInvoice}
                 disabled={isInvoiceLoading}
               >
                 {isInvoiceLoading ? (
@@ -326,7 +326,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
                 ) : (
                   <FileDown className="h-4 w-4 mr-2" />
                 )}
-                View Invoice PDF
+                Download Invoice PDF
               </Button>
             ) : (
               <p className="text-sm text-muted-foreground">No invoice generated yet.</p>

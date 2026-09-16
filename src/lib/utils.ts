@@ -66,6 +66,11 @@ export function downloadBlob(blob: Blob, filename: string) {
   URL.revokeObjectURL(url);
 }
 
+export function invoicePdfFilename(invoiceNumber?: string, fallbackNumber?: string) {
+  const identifier = invoiceNumber?.trim() || fallbackNumber?.trim() || "invoice";
+  return `InstantNeed-${identifier}.pdf`;
+}
+
 /** Opens a fetched blob (e.g. a PDF) in a new tab via a temporary object URL. */
 export function viewBlobInNewTab(blob: Blob) {
   const url = URL.createObjectURL(blob);

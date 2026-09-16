@@ -25,7 +25,7 @@ interface OrderDetailPageProps {
 export default function OrderDetailPage({ params }: OrderDetailPageProps) {
   const { id } = use(params);
   const { data: order, isLoading } = useOrder(id);
-  const { handleView: handleViewInvoice, isLoading: isInvoiceLoading } = useInvoiceDownload(id);
+  const { handleDownload: handleDownloadInvoice, isLoading: isInvoiceLoading } = useInvoiceDownload(id, false, order?.invoiceNumber, order?.orderNumber);
 
   if (isLoading) {
     return (
@@ -149,7 +149,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
           </div>
           <button
             type="button"
-            onClick={handleViewInvoice}
+            onClick={handleDownloadInvoice}
             disabled={isInvoiceLoading}
             className="inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium hover:bg-muted transition-colors disabled:opacity-50"
           >
@@ -158,7 +158,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
             ) : (
               <FileDown className="h-4 w-4" />
             )}
-            View PDF
+            Download PDF
           </button>
         </div>
       )}

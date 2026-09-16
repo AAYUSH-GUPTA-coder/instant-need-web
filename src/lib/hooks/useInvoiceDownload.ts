@@ -3,19 +3,19 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { ordersApi, adminOrdersApi } from "@/lib/api/orders";
-import { viewBlobInNewTab } from "@/lib/utils";
+import { downloadBlob, invoicePdfFilename } from "@/lib/utils";
 
-/** Fetches an order's invoice PDF through the authenticated API and opens it in a new tab. */
-export function useInvoiceDownload(orderId: string, admin = false) {
+/** Fetches an order's invoice PDF through the authenticated API and downloads it with its invoice filename. */
+export function useInvoiceDownload(orderId: string, admin = false, invoiceNumber?: string, orderNumber?: string) {
   const [isLoading, setIsLoading] = useState(false);
 
-  async function handleView() {
+  async function handleDownload() {
     setIsLoading(true);
     try {
       const blob = admin
         ? await adminOrdersApi.downloadInvoice(orderId)
         : await ordersApi.downloadInvoice(orderId);
-      viewBlobInNewTab(blob);
+      downloadBlob(blob, invoicePdfFilename(invoiceNumber, orderNumber || orderId));
     } catch {
       toast.error("Could not load invoice. Please try again.");
     } finally {
@@ -23,5 +23,5 @@ export function useInvoiceDownload(orderId: string, admin = false) {
     }
   }
 
-  return { handleView, isLoading };
+  return { handleDownload, isLoading };
 }

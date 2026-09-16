@@ -30,20 +30,20 @@ interface CustomerDetailPageProps {
   params: Promise<{ id: string }>;
 }
 
-function InvoiceCell({ orderId, hasInvoice }: { orderId: string; hasInvoice: boolean }) {
-  const { handleView, isLoading } = useInvoiceDownload(orderId, true);
+function InvoiceCell({ orderId, orderNumber, invoiceNumber, hasInvoice }: { orderId: string; orderNumber?: string; invoiceNumber?: string; hasInvoice: boolean }) {
+  const { handleDownload, isLoading } = useInvoiceDownload(orderId, true, invoiceNumber, orderNumber);
   if (!hasInvoice) {
     return <span className="text-xs text-muted-foreground">-</span>;
   }
   return (
     <button
       type="button"
-      onClick={handleView}
+      onClick={handleDownload}
       disabled={isLoading}
       className="inline-flex items-center gap-1 text-xs text-primary hover:underline disabled:opacity-50"
     >
       {isLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <FileDown className="h-3 w-3" />}
-      View
+      Download
     </button>
   );
 }
@@ -290,7 +290,7 @@ export default function CustomerDetailPage({ params }: CustomerDetailPageProps) 
                           : "-"}
                       </TableCell>
                       <TableCell>
-                        <InvoiceCell orderId={order.id} hasInvoice={!!order.invoiceUrl} />
+                        <InvoiceCell orderId={order.id} orderNumber={order.orderNumber} invoiceNumber={order.invoiceNumber} hasInvoice={!!order.invoiceUrl} />
                       </TableCell>
                       <TableCell>
                         <Link
