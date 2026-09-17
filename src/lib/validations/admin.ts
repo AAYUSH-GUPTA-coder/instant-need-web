@@ -21,6 +21,7 @@ export const productSchema = z.object({
   sku: z.string().min(1, "SKU is required"),
   description: z.string().optional(),
   categoryId: z.string().min(1, "Category is required"),
+  unitOfMeasurement: z.string().trim().min(1, "Unit is required").max(50, "Unit is too long"),
   mrp: z.coerce.number().positive("MRP must be positive").optional().or(z.literal("")),
   hsnCode: z.string().max(20, "HSN code is too long").optional().or(z.literal("")),
   cgstRate: z.coerce.number().min(0).max(100).optional().or(z.literal("")),

@@ -32,6 +32,7 @@ export interface ProductDTO {
   categoryId: string;
   categoryName: string;
   categorySlug?: string;
+  unitOfMeasurement?: string;
   mrp?: number;
   basePrice: number;
   hsnCode?: string;
@@ -53,6 +54,7 @@ export interface ProductListItem {
   slug: string;
   sku: string;
   categoryName: string;
+  unitOfMeasurement?: string;
   mrp?: number;
   basePrice: number;
   hsnCode?: string;
@@ -90,6 +92,7 @@ export interface CreateProductRequest {
   sku: string;
   description?: string;
   categoryId: string;
+  unitOfMeasurement?: string;
   basePrice: number;
   hsnCode?: string;
   cgstRate?: number;

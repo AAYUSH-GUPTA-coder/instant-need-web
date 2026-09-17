@@ -70,6 +70,7 @@ export function ProductForm({ product }: ProductFormProps) {
       sku: "",
       description: "",
       categoryId: "",
+      unitOfMeasurement: "",
       mrp: undefined,
       hsnCode: "",
       cgstRate: "",
@@ -100,6 +101,7 @@ export function ProductForm({ product }: ProductFormProps) {
         sku: product.sku,
         description: product.description ?? "",
         categoryId: product.categoryId,
+        unitOfMeasurement: product.unitOfMeasurement ?? "",
         mrp: product.mrp ?? undefined,
         hsnCode: product.hsnCode ?? "",
         cgstRate: product.cgstRate ?? "",
@@ -132,6 +134,7 @@ export function ProductForm({ product }: ProductFormProps) {
 
     const payload = {
       ...data,
+      unitOfMeasurement: data.unitOfMeasurement.trim(),
       mrp: data.mrp === "" || data.mrp === undefined ? undefined : data.mrp,
       hsnCode: data.hsnCode === "" || data.hsnCode === undefined ? undefined : data.hsnCode.trim(),
       cgstRate: data.cgstRate === "" || data.cgstRate === undefined ? undefined : data.cgstRate,
@@ -194,11 +197,16 @@ export function ProductForm({ product }: ProductFormProps) {
               </div>
             </div>
 
-            <div className="grid sm:grid-cols-3 gap-4">
+            <div className="grid sm:grid-cols-4 gap-4">
               <div className="space-y-1">
                 <Label htmlFor="hsnCode">HSN code</Label>
                 <Input id="hsnCode" {...register("hsnCode")} placeholder="e.g. 33061020" />
                 {errors.hsnCode && <p className="text-xs text-destructive">{errors.hsnCode.message}</p>}
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="unitOfMeasurement">Unit *</Label>
+                <Input id="unitOfMeasurement" {...register("unitOfMeasurement")} placeholder="e.g. Pcs, Box, Bag" />
+                {errors.unitOfMeasurement && <p className="text-xs text-destructive">{errors.unitOfMeasurement.message}</p>}
               </div>
               <div className="space-y-1">
                 <Label htmlFor="cgstRate">CGST (%)</Label>
