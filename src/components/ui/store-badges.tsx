@@ -22,7 +22,7 @@ export function AppStoreBadge({ href, disabled }: { href: string; disabled?: boo
     <>
       <AppleMark className="h-6 w-6 shrink-0" />
       <span className="text-left leading-tight">
-        <span className="block text-[10px] opacity-80">Download on the</span>
+        <span className="block text-xs">Download on the</span>
         <span className="block text-base font-semibold -mt-0.5">App Store</span>
       </span>
     </>
@@ -49,7 +49,7 @@ export function GooglePlayBadge({ href, disabled }: { href: string; disabled?: b
     <>
       <GooglePlayMark className="h-6 w-6 shrink-0" />
       <span className="text-left leading-tight">
-        <span className="block text-[10px] opacity-80">GET IT ON</span>
+        <span className="block text-xs">GET IT ON</span>
         <span className="block text-base font-semibold -mt-0.5">Google Play</span>
       </span>
     </>

@@ -33,7 +33,7 @@ export function OrderSummaryPanel() {
                 </div>
               )}
               {/* Qty badge */}
-              <span className="absolute -top-1.5 -right-1.5 h-4 w-4 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center font-medium">
+              <span className="absolute -top-1.5 -right-1.5 h-4 w-4 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-medium">
                 {item.quantity > 99 ? "99+" : item.quantity}
               </span>
             </div>

@@ -30,7 +30,7 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
           )}
           {product.stock > 0 && product.mrp && product.mrp > product.basePrice && (
-            <Badge className="absolute top-1.5 right-1.5 bg-red-600 text-white text-[10px] font-bold shadow-sm [a]:hover:bg-red-600">
+            <Badge className="absolute top-1.5 right-1.5 bg-red-600 text-white text-xs font-bold shadow-sm [a]:hover:bg-red-600">
               {Math.round((1 - product.basePrice / product.mrp) * 100)}% OFF
             </Badge>
           )}
@@ -43,7 +43,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
         <CardContent className="p-3 space-y-1">
           <p className="text-xs text-muted-foreground truncate">{product.categoryName}</p>
-          <h3 className="text-sm font-medium leading-tight line-clamp-2 group-hover:text-primary transition-colors">
+          <h3 className="text-base font-medium leading-snug line-clamp-2 group-hover:text-primary transition-colors">
             {product.name}
           </h3>
           <p className="text-xs text-muted-foreground font-mono">{product.sku}</p>
@@ -57,12 +57,12 @@ export function ProductCard({ product }: ProductCardProps) {
               <p className="text-base font-semibold">
                 {formatCurrency(product.basePrice, product.currencyCode)}
               </p>
-              <p className="text-[10px] text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 Min. order: {product.moq} items
               </p>
             </div>
             {product.stock > 0 && product.stock <= 20 && (
-              <Badge variant="destructive" className="text-[10px]">
+              <Badge variant="destructive" className="text-xs">
                 Only {product.stock} left
               </Badge>
             )}

@@ -13,7 +13,7 @@ export default function PrivacyPolicyPage() {
         <p className="text-sm text-muted-foreground">Last updated: 9 July 2026</p>
       </div>
 
-      <div className="space-y-8 text-sm leading-relaxed text-muted-foreground [&_h2]:text-foreground [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mb-3 [&_strong]:text-foreground [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1.5 [&_p+ul]:mt-3">
+      <div className="max-w-2xl space-y-8 text-base md:text-[17px] leading-7 text-foreground/80 [&_h2]:text-foreground [&_h2]:text-xl [&_h2]:leading-7 [&_h2]:font-semibold [&_h2]:mb-3 [&_strong]:text-foreground [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-2 [&_p+ul]:mt-3">
         <p>
           InstantNeed (&quot;we,&quot; &quot;us,&quot; &quot;our&quot;) operates the InstantNeed website
           (instantneed.in) and mobile application (together, the &quot;Platform&quot;), a B2B wholesale
@@ -119,7 +119,7 @@ export default function PrivacyPolicyPage() {
             <li><strong>Email</strong>: support@instantneed.in</li>
             <li><strong>Phone</strong>: +91 8295781959</li>
             <li>
-              <strong>Address</strong>: Instantneed Pvt Ltd, 5959, 12 Cross Road, Ambala Cantt, Ambala
+              <strong>Address</strong>: InstantNeed, 5959, 12 Cross Road, Ambala Cantt, Ambala
               133001, Haryana, India
             </li>
           </ul>
