@@ -13,6 +13,9 @@ export const customerApi = {
   updateProfile: (body: UpdateProfileRequest) =>
     apiClient.put<CustomerProfileDTO>("/me", body).then((r) => r.data),
 
+  deleteAccount: () =>
+    apiClient.delete<void>("/me").then((r) => r.data),
+
   getAddresses: () =>
     apiClient.get<AddressDTO[]>("/me/addresses").then((r) => r.data),
 

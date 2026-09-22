@@ -12,6 +12,7 @@ const FOOTER_LINKS = {
   Support: [
     { label: "Terms of Service", href: "/terms" },
     { label: "Privacy Policy", href: "/privacy-policy" },
+    { label: "Account Deletion", href: "/account-deletion" },
   ],
   Catalog: [
     { label: "All Products", href: "/products" },

@@ -17,6 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${siteUrl}/home`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
     { url: `${siteUrl}/products`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
     { url: `${siteUrl}/categories`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${siteUrl}/account-deletion`, lastModified: now, changeFrequency: "monthly", priority: 0.3 },
     { url: `${siteUrl}/login`, lastModified: now, changeFrequency: "monthly", priority: 0.3 },
     { url: `${siteUrl}/register`, lastModified: now, changeFrequency: "monthly", priority: 0.3 },
   ];

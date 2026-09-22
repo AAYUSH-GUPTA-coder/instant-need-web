@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, CheckCircle2 } from "lucide-react";
+import { Loader2, CheckCircle2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -12,15 +12,32 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FormError } from "@/components/forms/FormError";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 import { profileSchema, type ProfileFormData } from "@/lib/validations/account";
 import { useCustomerProfile, useUpdateProfile } from "@/lib/hooks/useCustomer";
+import { customerApi } from "@/lib/api/customer";
+import { useAuthStore } from "@/lib/stores/authStore";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
   const { data: profile, isLoading } = useCustomerProfile();
   const { mutateAsync: updateProfile, isPending } = useUpdateProfile();
   const [serverError, setServerError] = useState("");
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deletePending, setDeletePending] = useState(false);
+  const logout = useAuthStore((s) => s.logout);
+  const router = useRouter();
 
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
@@ -52,6 +69,23 @@ export default function ProfilePage() {
         (err as { response?: { data?: { message?: string } } })?.response?.data
           ?.message ?? "Failed to update profile. Please try again.";
       setServerError(msg);
+    }
+  }
+
+  async function handleDeleteAccount() {
+    setDeletePending(true);
+    try {
+      await customerApi.deleteAccount();
+      logout();
+      toast.success("Your account has been deleted");
+      router.replace("/");
+    } catch (err: unknown) {
+      const message =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
+        "We could not delete your account. Please try again or contact support.";
+      toast.error(message);
+      setDeletePending(false);
+      setDeleteDialogOpen(false);
     }
   }
 
@@ -172,6 +206,53 @@ export default function ProfilePage() {
           </Button>
         </div>
       </form>
+
+      <section className="rounded-lg border border-destructive/30 bg-destructive/5 p-4 space-y-3">
+        <div className="flex items-start gap-3">
+          <Trash2 className="h-5 w-5 shrink-0 text-destructive mt-0.5" />
+          <div>
+            <h3 className="font-semibold text-destructive">Delete account</h3>
+            <p className="text-sm text-foreground/80 mt-1 leading-relaxed">
+              This removes your login, profile, saved addresses, cart, and stored invoice files.
+              Retained order records are anonymized where required for accounting or legal purposes.
+            </p>
+          </div>
+        </div>
+        <Button
+          type="button"
+          variant="destructive"
+          className="gap-2"
+          onClick={() => setDeleteDialogOpen(true)}
+        >
+          <Trash2 className="h-4 w-4" />
+          Delete my account
+        </Button>
+      </section>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete your InstantNeed account?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. Your login, profile, saved addresses, cart, and stored
+              invoice files will be removed. Any retained order record will be anonymized.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deletePending}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={deletePending}
+              onClick={(event) => {
+                event.preventDefault();
+                void handleDeleteAccount();
+              }}
+              className="bg-destructive text-white hover:bg-destructive/90"
+            >
+              {deletePending ? "Deleting..." : "Delete account"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

@@ -96,7 +96,14 @@ export default function PrivacyPolicyPage() {
               Protection Board of India.
             </li>
           </ul>
-          <p>To exercise any of these rights, contact us using the details in Section 6.</p>
+          <p>
+            To exercise any of these rights, contact us using the details in Section 6. You can also
+            submit an account deletion request through our{" "}
+            <a className="text-primary underline underline-offset-4" href="/account-deletion">
+              account deletion page
+            </a>
+            .
+          </p>
         </section>
 
         <section>
@@ -104,7 +111,11 @@ export default function PrivacyPolicyPage() {
           <p>
             We retain your account and order data for as long as your account is active, and for a
             reasonable period afterward as required for tax, accounting, and legal compliance purposes.
-            You may request deletion of your account at any time, subject to these retention obligations.
+            You may request deletion of your account at any time through the Account settings or our{" "}
+            <a className="text-primary underline underline-offset-4" href="/account-deletion">
+              account deletion page
+            </a>
+            , subject to these retention obligations.
           </p>
         </section>
 
