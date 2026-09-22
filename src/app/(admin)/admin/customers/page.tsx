@@ -66,6 +66,7 @@ function CustomersContent() {
                 <TableHead className="text-right">Orders</TableHead>
                 <TableHead>Joined</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Access</TableHead>
                 <TableHead />
               </TableRow>
             </TableHeader>
@@ -73,7 +74,7 @@ function CustomersContent() {
               {isLoading ? (
                 Array.from({ length: 8 }).map((_, i) => (
                   <TableRow key={i}>
-                    {Array.from({ length: 8 }).map((_, j) => (
+                    {Array.from({ length: 9 }).map((_, j) => (
                       <TableCell key={j}>
                         <Skeleton className="h-4 w-full" />
                       </TableCell>
@@ -83,7 +84,7 @@ function CustomersContent() {
               ) : !customers?.length ? (
                 <TableRow>
                   <TableCell
-                    colSpan={8}
+                    colSpan={9}
                     className="text-center py-12 text-muted-foreground"
                   >
                     No customers found
@@ -112,6 +113,14 @@ function CustomersContent() {
                         className="text-xs"
                       >
                         {c.active !== false ? "Active" : "Inactive"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={c.role === "ADMIN" ? "default" : "secondary"}
+                        className="text-xs"
+                      >
+                        {c.role === "ADMIN" ? "Admin" : c.role === "SUPER_ADMIN" ? "Super Admin" : "Customer"}
                       </Badge>
                     </TableCell>
                     <TableCell>

@@ -173,6 +173,17 @@ export function useAdminCustomerAddresses(customerId: string, customerData: any)
   });
 }
 
+export function useUpdateAdminCustomerRole(id: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (role: "CUSTOMER" | "ADMIN") => adminCustomerApi.updateRole(id, role),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: adminCustomerKeys.detail(id) });
+      qc.invalidateQueries({ queryKey: adminCustomerKeys.all });
+    },
+  });
+}
+
 // ── Categories ────────────────────────────────────────────────────────────
 
 export const adminCategoryKeys = {

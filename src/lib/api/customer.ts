@@ -5,6 +5,7 @@ import type {
   AddressDTO,
   CreateAddressRequest,
 } from "@/lib/types/customer";
+import type { AdminCustomerListItem } from "@/lib/types/admin";
 
 export const customerApi = {
   getProfile: () =>
@@ -47,4 +48,9 @@ export const adminCustomerApi = {
 
   getCustomerAddresses: (id: string) =>
     apiClient.get<AddressDTO[]>(`/admin/customers/${id}/addresses`).then((r) => r.data),
+
+  updateRole: (id: string, role: "CUSTOMER" | "ADMIN") =>
+    apiClient
+      .patch<AdminCustomerListItem>(`/admin/customers/${id}/role`, { role })
+      .then((r) => r.data),
 };

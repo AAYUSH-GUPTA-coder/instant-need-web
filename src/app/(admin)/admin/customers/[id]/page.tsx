@@ -1,15 +1,25 @@
 "use client";
 
-import { use } from "react";
+import { use, useState } from "react";
 import Link from "next/link";
 import { format } from "date-fns";
-import { ArrowLeft, FileDown, Loader2 } from "lucide-react";
+import { ArrowLeft, FileDown, Loader2, ShieldCheck, ShieldOff } from "lucide-react";
 
 import { AdminHeader } from "@/components/layout/AdminHeader";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import {
   Table,
   TableBody,
@@ -19,10 +29,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { useAdminCustomer, useAdminCustomerAddresses } from "@/lib/hooks/useAdmin";
+import {
+  useAdminCustomer,
+  useAdminCustomerAddresses,
+  useUpdateAdminCustomerRole,
+} from "@/lib/hooks/useAdmin";
 import { useInvoiceDownload } from "@/lib/hooks/useInvoiceDownload";
 import { formatCurrency } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { MapPin } from "lucide-react";
 
@@ -59,6 +73,9 @@ const STATUS_BADGE: Record<string, string> = {
 export default function CustomerDetailPage({ params }: CustomerDetailPageProps) {
   const { id } = use(params);
   const { data, isLoading } = useAdminCustomer(id);
+  const updateRole = useUpdateAdminCustomerRole(id);
+  const [roleDialogOpen, setRoleDialogOpen] = useState(false);
+  const [roleChangeError, setRoleChangeError] = useState<string | null>(null);
 
   // The admin customer API response may have nested profile + orders
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -94,19 +111,45 @@ export default function CustomerDetailPage({ params }: CustomerDetailPageProps) 
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const orders: any[] = customer.recentOrders ?? customer.orders ?? [];
+  const isAdmin = customer.role === "ADMIN";
+  const isSuperAdmin = customer.role === "SUPER_ADMIN";
+  const canChangeRole = customer.role !== "SUPER_ADMIN";
+  const nextRole = isAdmin ? "CUSTOMER" : "ADMIN";
+
+  async function changeRole() {
+    setRoleChangeError(null);
+    try {
+      await updateRole.mutateAsync(nextRole);
+      setRoleDialogOpen(false);
+    } catch {
+      setRoleChangeError("Could not update admin access. Please try again.");
+    }
+  }
 
   return (
     <>
       <AdminHeader
         title={customer.fullName ?? "Customer"}
         actions={
-          <Link
-            href="/admin/customers"
-            className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
-          >
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            Back
-          </Link>
+          <div className="flex items-center gap-2">
+            {canChangeRole && (
+              <Button
+                size="sm"
+                variant={isAdmin ? "destructive" : "default"}
+                onClick={() => setRoleDialogOpen(true)}
+              >
+                {isAdmin ? <ShieldOff className="h-4 w-4 mr-1" /> : <ShieldCheck className="h-4 w-4 mr-1" />}
+                {isAdmin ? "Remove Admin" : "Make Admin"}
+              </Button>
+            )}
+            <Link
+              href="/admin/customers"
+              className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+            >
+              <ArrowLeft className="h-4 w-4 mr-1" />
+              Back
+            </Link>
+          </div>
         }
       />
       <div className="p-6 space-y-5 max-w-4xl">
@@ -150,9 +193,18 @@ export default function CustomerDetailPage({ params }: CustomerDetailPageProps) 
                   {customer.active !== false ? "Active" : "Inactive"}
                 </Badge>
               </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Access</p>
+                <Badge variant={isAdmin ? "default" : "secondary"} className="text-xs mt-0.5">
+                  {isAdmin ? "Admin" : isSuperAdmin ? "Super Admin" : "Customer"}
+                </Badge>
+              </div>
             </div>
           </CardContent>
         </Card>
+        {roleChangeError && (
+          <p className="text-sm text-destructive" role="alert">{roleChangeError}</p>
+        )}
 
         {/* Stats */}
         {(customer.orderCount !== undefined || customer.totalRevenue !== undefined) && (
@@ -308,6 +360,28 @@ export default function CustomerDetailPage({ params }: CustomerDetailPageProps) 
           </CardContent>
         </Card>
       </div>
+      <AlertDialog open={roleDialogOpen} onOpenChange={setRoleDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{isAdmin ? "Remove admin access?" : "Make this customer an admin?"}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {isAdmin
+                ? `${customer.fullName} will keep their customer account but will no longer be able to access the admin area.`
+                : `${customer.fullName} will be able to access the admin area and manage the business.`}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={updateRole.isPending}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={updateRole.isPending}
+              className={isAdmin ? "bg-destructive text-white hover:bg-destructive/90" : ""}
+              onClick={changeRole}
+            >
+              {updateRole.isPending ? "Saving…" : isAdmin ? "Remove Admin" : "Make Admin"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }

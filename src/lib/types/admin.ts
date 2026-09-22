@@ -69,6 +69,7 @@ export interface AdminCustomerListItem {
   businessName?: string;
   email: string;
   phoneNumber: string;
+  role: "CUSTOMER" | "ADMIN" | "SUPER_ADMIN";
   orderCount: number;
   createdAt: string;
   active: boolean;
