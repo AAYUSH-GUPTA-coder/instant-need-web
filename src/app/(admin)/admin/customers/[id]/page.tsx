@@ -45,7 +45,7 @@ interface CustomerDetailPageProps {
 }
 
 function InvoiceCell({ orderId, orderNumber, invoiceNumber, hasInvoice }: { orderId: string; orderNumber?: string; invoiceNumber?: string; hasInvoice: boolean }) {
-  const { handleDownload, isLoading } = useInvoiceDownload(orderId, true, invoiceNumber, orderNumber);
+  const { handleDownload, isLoading } = useInvoiceDownload(orderId, invoiceNumber, orderNumber);
   if (!hasInvoice) {
     return <span className="text-xs text-muted-foreground">-</span>;
   }

@@ -1,6 +1,7 @@
 import apiClient from "./client";
 import type {
   OrderDTO,
+  CustomerOrderDTO,
   OrderListItem,
   PlaceOrderRequest,
   PlaceOrderResponse,
@@ -17,7 +18,7 @@ export const ordersApi = {
       .then((r) => r.data),
 
   getOrder: (id: string) =>
-    apiClient.get<OrderDTO>(`/orders/${id}`).then((r) => r.data),
+    apiClient.get<CustomerOrderDTO>(`/orders/${id}`).then((r) => r.data),
 
   placeOrder: (body: PlaceOrderRequest, idempotencyKey?: string) =>
     apiClient.post<PlaceOrderResponse>("/orders", body, {
@@ -25,12 +26,7 @@ export const ordersApi = {
     }).then((r) => r.data),
 
   cancelOrder: (id: string) =>
-    apiClient.post<OrderDTO>(`/orders/${id}/cancel`).then((r) => r.data),
-
-  downloadInvoice: (id: string) =>
-    apiClient
-      .get<Blob>(`/orders/${id}/invoice`, { responseType: "blob" })
-      .then((r) => r.data),
+    apiClient.post<CustomerOrderDTO>(`/orders/${id}/cancel`).then((r) => r.data),
 };
 
 export const adminOrdersApi = {

@@ -57,7 +57,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
   const { data: order, isLoading } = useAdminOrder(id);
   const updateStatus = useUpdateOrderStatus(id);
   const regenerateInvoice = useRegenerateInvoice(id);
-  const { handleDownload: handleDownloadInvoice, isLoading: isInvoiceLoading } = useInvoiceDownload(id, true, order?.invoiceNumber, order?.orderNumber);
+  const { handleDownload: handleDownloadInvoice, isLoading: isInvoiceLoading } = useInvoiceDownload(id, order?.invoiceNumber, order?.orderNumber);
   const [selectedStatus, setSelectedStatus] = useState<OrderStatus | "">("");
   const [ewayBillNumber, setEwayBillNumber] = useState("");
   const [transport, setTransport] = useState("");

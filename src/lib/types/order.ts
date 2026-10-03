@@ -61,6 +61,8 @@ export interface OrderDTO {
   invoiceUrl?: string;
 }
 
+export type CustomerOrderDTO = Omit<OrderDTO, "invoiceNumber" | "invoiceUrl">;
+
 export interface OrderListItem {
   id: string;
   orderNumber: string;
