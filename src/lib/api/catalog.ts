@@ -118,9 +118,5 @@ export const pincodeApi = {
   getMinOrder: (pincode: string) =>
     apiClient
       .get<PincodeMinOrderDTO>("/catalog/pincode-min-order", { params: { pincode } })
-      .then((r) => r.data)
-      .catch((err) => {
-        if (err?.response?.status === 204) return null;
-        throw err;
-      }),
+      .then((r) => r.status === 204 ? null : r.data),
 };

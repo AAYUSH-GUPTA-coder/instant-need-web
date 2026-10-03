@@ -19,8 +19,10 @@ export const ordersApi = {
   getOrder: (id: string) =>
     apiClient.get<OrderDTO>(`/orders/${id}`).then((r) => r.data),
 
-  placeOrder: (body: PlaceOrderRequest) =>
-    apiClient.post<PlaceOrderResponse>("/orders", body).then((r) => r.data),
+  placeOrder: (body: PlaceOrderRequest, idempotencyKey?: string) =>
+    apiClient.post<PlaceOrderResponse>("/orders", body, {
+      headers: idempotencyKey ? { "Idempotency-Key": idempotencyKey } : undefined,
+    }).then((r) => r.data),
 
   cancelOrder: (id: string) =>
     apiClient.post<OrderDTO>(`/orders/${id}/cancel`).then((r) => r.data),

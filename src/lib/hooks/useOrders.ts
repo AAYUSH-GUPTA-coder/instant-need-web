@@ -31,7 +31,8 @@ export function usePlaceOrder() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (body: PlaceOrderRequest) => ordersApi.placeOrder(body),
+    mutationFn: ({ body, idempotencyKey }: { body: PlaceOrderRequest; idempotencyKey: string }) =>
+      ordersApi.placeOrder(body, idempotencyKey),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: orderKeys.lists() });
     },

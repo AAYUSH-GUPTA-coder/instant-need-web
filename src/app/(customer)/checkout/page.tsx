@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -44,6 +44,7 @@ export default function CheckoutPage() {
   const subtotal = useCartStore((s) => s.subtotal)();
   const clearCart = useCartStore((s) => s.clear);
   const [serverError, setServerError] = useState("");
+  const pendingOrder = useRef<{ body: string; key: string } | null>(null);
 
   // Authenticated users start with saved-address mode; guests always use new
   const [addressMode, setAddressMode] = useState<"saved" | "new">(
@@ -117,7 +118,7 @@ export default function CheckoutPage() {
         quantity: i.quantity,
       }));
 
-      const order = await placeOrder({
+      const body = {
         items: orderItems,
         paymentMethod: data.paymentMethod,
         notes: data.notes,
@@ -137,8 +138,23 @@ export default function CheckoutPage() {
                 saveAddress: data.saveAddress,
               },
             }),
-      });
+      };
+      const serialized = JSON.stringify(body);
+      const fingerprint = Array.from(new Uint8Array(
+        await crypto.subtle.digest("SHA-256", new TextEncoder().encode(serialized)),
+      )).map((byte) => byte.toString(16).padStart(2, "0")).join("");
+      const stored = sessionStorage.getItem("instantneed-pending-order");
+      let previous: { body: string; key: string } | null = null;
+      try { previous = stored ? JSON.parse(stored) : null; } catch { /* stale session value */ }
+      if (pendingOrder.current?.body !== fingerprint) {
+        pendingOrder.current = previous?.body === fingerprint
+          ? previous
+          : { body: fingerprint, key: crypto.randomUUID() };
+        sessionStorage.setItem("instantneed-pending-order", JSON.stringify(pendingOrder.current));
+      }
+      const order = await placeOrder({ body, idempotencyKey: pendingOrder.current.key });
 
+      sessionStorage.removeItem("instantneed-pending-order");
       toast.success("Order placed successfully!");
       router.push(`/checkout/confirmation/${order.id}`);
       clearCart();
