@@ -4,7 +4,8 @@ import { useState } from "react";
 import { ShoppingCart, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useCartStore } from "@/lib/stores/cartStore";
+import { priceForQty, useCartStore } from "@/lib/stores/cartStore";
+import { formatCurrency } from "@/lib/utils";
 import { toast } from "sonner";
 import type { ProductDTO } from "@/lib/types/catalog";
 
@@ -17,6 +18,7 @@ export function AddToCartButton({ product }: AddToCartButtonProps) {
   const addItem = useCartStore((s) => s.addItem);
 
   const outOfStock = product.stock === 0;
+  const unitPrice = priceForQty(product.pricingTiers, qty, product.basePrice);
 
   function decrement() {
     setQty((q) => Math.max(product.moq, q - 1));
@@ -92,6 +94,13 @@ export function AddToCartButton({ product }: AddToCartButtonProps) {
         </Button>
         <span className="text-sm text-muted-foreground">
           Minimum order: {product.moq} items
+        </span>
+      </div>
+
+      <div className="flex items-center justify-between rounded-lg border bg-muted/30 px-4 py-3">
+        <span className="text-sm font-medium">Total</span>
+        <span className="text-lg font-semibold">
+          {formatCurrency(unitPrice * qty, product.currencyCode)}
         </span>
       </div>
 

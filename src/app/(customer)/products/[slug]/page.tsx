@@ -205,7 +205,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
           <Separator />
 
           {/* Add to cart */}
-          <AddToCartButton product={product} />
+          <AddToCartButton key={product.id} product={product} />
 
           {/* Meta */}
           <div className="text-xs text-muted-foreground space-y-1 pt-2">

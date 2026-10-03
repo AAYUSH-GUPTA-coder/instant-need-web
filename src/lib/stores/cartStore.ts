@@ -18,7 +18,7 @@ export interface CartItem {
   pricingTiers: PricingTierDTO[];
 }
 
-function priceForQty(tiers: PricingTierDTO[], qty: number, fallback: number): number {
+export function priceForQty(tiers: PricingTierDTO[], qty: number, fallback: number): number {
   if (!tiers || tiers.length === 0) return fallback;
   const matched = tiers.find(
     (t) => t.minQty <= qty && (t.maxQty == null || t.maxQty >= qty)

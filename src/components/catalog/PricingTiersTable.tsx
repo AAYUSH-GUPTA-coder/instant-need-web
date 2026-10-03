@@ -44,7 +44,7 @@ export function PricingTiersTable({ tiers, currencyCode, basePrice, mrp }: Prici
                 {tier.minQty}
                 {tier.maxQty ? `–${tier.maxQty}` : "+"} items
               </span>
-              {tier.discountPercent && tier.discountPercent > 0 && (
+              {tier.discountPercent != null && tier.discountPercent > 0 && (
                 <span className="text-xs font-semibold text-green-700 bg-green-100 rounded px-1.5 py-0.5">
                   {tier.discountPercent}% off
                 </span>
