@@ -2,11 +2,13 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useSyncExternalStore } from "react";
 import { ArrowRight, Package, Truck, ShieldCheck, LayoutGrid } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ProductCard, ProductCardSkeleton } from "@/components/catalog/ProductCard";
+import { CatalogUnavailable } from "@/components/catalog/CatalogUnavailable";
 import { useCategories, useProducts } from "@/lib/hooks/useCatalog";
 import { useAuthStore } from "@/lib/stores/authStore";
 import { cn } from "@/lib/utils";
@@ -18,7 +20,7 @@ const FEATURES = [
 ];
 
 function FeaturedCategories() {
-  const { data: categories, isLoading } = useCategories();
+  const { data: categories, isLoading, isError, refetch } = useCategories();
 
   if (isLoading) {
     return (
@@ -29,6 +31,8 @@ function FeaturedCategories() {
       </div>
     );
   }
+
+  if (isError) return <CatalogUnavailable retry={() => { void refetch(); }} />;
 
   if (!categories || categories.length === 0) return null;
 
@@ -65,7 +69,7 @@ function FeaturedCategories() {
 }
 
 function FeaturedProducts() {
-  const { data, isLoading } = useProducts({ size: 8, sort: "createdAt,desc" });
+  const { data, isLoading, isError, refetch } = useProducts({ size: 8, sort: "createdAt,desc" });
 
   if (isLoading) {
     return (
@@ -74,6 +78,8 @@ function FeaturedProducts() {
       </div>
     );
   }
+
+  if (isError) return <CatalogUnavailable retry={() => { void refetch(); }} />;
 
   if (!data || (data.items?.length ?? 0) === 0) return null;
 
@@ -85,7 +91,11 @@ function FeaturedProducts() {
 }
 
 export default function HomePage() {
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)();
+  const isAuthenticated = useSyncExternalStore(
+    useAuthStore.subscribe,
+    () => !!useAuthStore.getState().accessToken,
+    () => false,
+  );
 
   return (
     <div className="flex flex-col">

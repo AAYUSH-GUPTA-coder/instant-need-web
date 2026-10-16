@@ -8,6 +8,7 @@ import { FilterSidebar } from "@/components/catalog/FilterSidebar";
 import { ProductCard, ProductCardSkeleton } from "@/components/catalog/ProductCard";
 import { Pagination } from "@/components/catalog/Pagination";
 import { EmptyState } from "@/components/ui/empty-state";
+import { CatalogUnavailable } from "@/components/catalog/CatalogUnavailable";
 import { useProducts } from "@/lib/hooks/useCatalog";
 import { calcTotalPages } from "@/lib/types/common";
 import { useRouter, usePathname } from "next/navigation";
@@ -51,7 +52,7 @@ export function ProductsContent({ fixedCategoryId }: ProductsContentProps = {}) 
   const inStock = searchParams.get("inStock") === "true" ? true : undefined;
   const sort = searchParams.get("sort") || undefined;
 
-  const { data, isLoading } = useProducts({
+  const { data, isLoading, isError, refetch } = useProducts({
     search: search || undefined,
     categoryId,
     minPrice,
@@ -138,6 +139,8 @@ export function ProductsContent({ fixedCategoryId }: ProductsContentProps = {}) 
               <ProductCardSkeleton key={i} />
             ))}
           </div>
+        ) : isError ? (
+          <CatalogUnavailable retry={() => { void refetch(); }} />
         ) : items.length === 0 ? (
           <EmptyState
             icon={Package}

@@ -6,10 +6,11 @@ import { LayoutGrid } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/ui/empty-state";
+import { CatalogUnavailable } from "@/components/catalog/CatalogUnavailable";
 import { useCategories } from "@/lib/hooks/useCatalog";
 
 export default function CategoriesPage() {
-  const { data: categories, isLoading } = useCategories();
+  const { data: categories, isLoading, isError, refetch } = useCategories();
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
@@ -26,6 +27,8 @@ export default function CategoriesPage() {
             <Skeleton key={i} className="aspect-video rounded-xl" />
           ))}
         </div>
+      ) : isError ? (
+        <CatalogUnavailable retry={() => { void refetch(); }} />
       ) : !categories || categories.length === 0 ? (
         <EmptyState
           icon={LayoutGrid}
