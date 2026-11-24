@@ -4,9 +4,11 @@ import { InstantNeedIcon } from "@/components/ui/brand";
 import { Badge } from "@/components/ui/badge";
 import { AppStoreBadge, GooglePlayBadge } from "@/components/ui/store-badges";
 
+const GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=com.b2b.instantneed";
+
 export const metadata: Metadata = {
-  title: "App Coming Soon",
-  description: "The InstantNeed app for Android and iOS is coming soon.",
+  title: "Download the App",
+  description: "Get the InstantNeed app for Android on Google Play. iOS is coming soon.",
 };
 
 const HIGHLIGHTS = [
@@ -22,8 +24,8 @@ const HIGHLIGHTS = [
   },
   {
     icon: Bell,
-    title: "Stock & price alerts",
-    description: "Get notified the moment your regular items restock.",
+    title: "Order updates",
+    description: "Get notified whenever your order status changes.",
   },
 ];
 
@@ -34,17 +36,16 @@ export default function DownloadAppPage() {
         {/* Copy */}
         <div className="space-y-6">
           <Badge variant="secondary" className="text-xs font-medium tracking-wide uppercase">
-            Coming soon
+            Now on Android
           </Badge>
 
           <div className="space-y-3">
             <h1 className="text-3xl md:text-4xl font-bold leading-tight tracking-tight">
-              The InstantNeed app is on its way
+              Order on the go with the InstantNeed app
             </h1>
             <p className="text-muted-foreground text-base leading-relaxed">
-              We&apos;re putting the finishing touches on the InstantNeed app for
-              Android and iOS, built for busy businesses and shop-owners. Order on
-              the web for now, and we&apos;ll let you know the moment it&apos;s live.
+              The InstantNeed app for Android is live on Google Play, built for
+              busy businesses and shop-owners. The iOS app is coming soon.
             </p>
           </div>
 
@@ -63,11 +64,11 @@ export default function DownloadAppPage() {
           </ul>
 
           <div className="flex flex-wrap gap-3 pt-2">
+            <GooglePlayBadge href={GOOGLE_PLAY_URL} />
             <AppStoreBadge href="#" disabled />
-            <GooglePlayBadge href="#" disabled />
           </div>
           <p className="text-xs text-muted-foreground">
-            Store links will go live at launch.
+            App Store link will go live when the iOS app launches.
           </p>
         </div>
 

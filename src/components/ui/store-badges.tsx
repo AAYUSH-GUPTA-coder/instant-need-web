@@ -35,7 +35,7 @@ export function AppStoreBadge({ href, disabled }: { href: string; disabled?: boo
     );
   }
   return (
-    <a href={href} className={classes}>
+    <a href={href} className={classes} target="_blank" rel="noopener noreferrer">
       {content}
     </a>
   );
@@ -62,7 +62,7 @@ export function GooglePlayBadge({ href, disabled }: { href: string; disabled?: b
     );
   }
   return (
-    <a href={href} className={classes}>
+    <a href={href} className={classes} target="_blank" rel="noopener noreferrer">
       {content}
     </a>
   );
